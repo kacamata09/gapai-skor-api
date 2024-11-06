@@ -1,13 +1,17 @@
-my clean architecture using golang with echo inspired by bxcodec's go clean architecture
 ## setup
 
-#### migrations
-1. Create database as in your env
-2. Execute this command in your database if you using postgresql, if you using mysql you don't need exec this
-```CREATE EXTENSION IF NOT EXISTS "uuid-ossp";```
-3. Exec migrations:
-install migrate module mysql:
-`go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@latest`
-exec migration:
+### Environment configuration
+You can settings your environment in env.yaml  
+### Database migration
+1. Create database as in your env.yaml
+2. Run migration with following docs in https://github.com/golang-migrate/migrate  
+   Example :  
+```
 migrate -path ./migrations/mysql -database "mysql://root:password@tcp(127.0.0.1:3306)/dbname" up
+```
+3. You can change database to mysql if change package driver sql and config_connection at main.go  
 
+### Run App
+```
+go run main.go
+```
