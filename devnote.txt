@@ -1,0 +1,5 @@
+##create migration
+migrate create -ext sql -dir ./migrations/mysql -seq create_savings
+
+##if error dirty version
+migrate -path ./migrations/mysql -database "mysql://root:@tcp(127.0.0.1:3306)/asrchat" force <target_version>
