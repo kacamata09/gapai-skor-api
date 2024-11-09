@@ -12,36 +12,36 @@ import (
 	"github.com/labstack/echo"
 )
 
-type UserHandler struct {
-	usecase domain.UserUsecase
+type TestHandler struct {
+	usecase domain.TestUsecase
 }
 
-func UserRoute(e *echo.Echo, uc domain.UserUsecase) {
-	handler := UserHandler{
+func TestRoute(e *echo.Echo, uc domain.TestUsecase) {
+	handler := TestHandler{
 		usecase: uc,
 	}
-	e.GET("/user/", func(c echo.Context) error {
-		return c.Redirect(http.StatusMovedPermanently, "/user")
+	e.GET("/test/", func(c echo.Context) error {
+		return c.Redirect(http.StatusMovedPermanently, "/test")
 	})
 
-	e.GET("/user", handler.GetAllHandler)
-	e.POST("/user", handler.Create)
-	e.GET("/user/:id", handler.GetByIDHandler)
+	e.GET("/test", handler.GetAllHandler)
+	e.POST("/test", handler.Create)
+	e.GET("/test/:id", handler.GetByIDHandler)
 }
 
-func (h *UserHandler) GetAllHandler(c echo.Context) error {
+func (h *TestHandler) GetAllHandler(c echo.Context) error {
 	// init handler
 	data, err := h.usecase.GetAllData()
 
 	if err != nil {
 		return helper_http.ErrorResponse(c, err)
 	}
-	resp := helper_http.SuccessResponse(c, data, "success get all user")
+	resp := helper_http.SuccessResponse(c, data, "success get all test")
 
 	return resp
 }
 
-func (h *UserHandler) GetByIDHandler(c echo.Context) error {
+func (h *TestHandler) GetByIDHandler(c echo.Context) error {
 	id := c.Param("id")
 	// id = fmt.Sprintf("%s")
 	// num, err := strconv.Atoi(id)
@@ -60,8 +60,8 @@ func (h *UserHandler) GetByIDHandler(c echo.Context) error {
 	return resp
 }
 
-func (h *UserHandler) Create(c echo.Context) error {
-	var data domain.User
+func (h *TestHandler) Create(c echo.Context) error {
+	var data domain.Test
 
 	err := c.Bind(&data)
 	if err != nil {
@@ -73,5 +73,5 @@ func (h *UserHandler) Create(c echo.Context) error {
 	if err != nil {
 		return helper_http.ErrorResponse(c, err)
 	}
-	return helper_http.SuccessResponse(c, data, "success create user")
+	return helper_http.SuccessResponse(c, data, "success create test")
 }

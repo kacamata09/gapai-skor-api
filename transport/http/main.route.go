@@ -16,8 +16,8 @@ type Home struct {
 }
 
 func homeHandler(c echo.Context) error {
-	data := Home {
-		Message : "welcome to gapai-skor project",
+	data := Home{
+		Message: "welcome to gapai-skor project",
 	}
 	return c.JSON(http.StatusOK, data)
 }
@@ -35,6 +35,14 @@ func StartHttp(e *echo.Echo, db *sql.DB) {
 	userUseCase := usecase.CreateUserUseCase(userRepo)
 	handler.UserRoute(e, userUseCase)
 
+	// test
+	testRepo := repositoryMySql.CreateRepoTest(db)
+	testUseCase := usecase.CreateTestUseCase(testRepo)
+	handler.TestRoute(e, testUseCase)
 
+	// user duration test
+	userTestDurationRepo := repositoryMySql.CreateRepoUserTestDuration(db)
+	userTestDurationUseCase := usecase.CreateUserTestDurationUseCase(userTestDurationRepo)
+	handler.UserTestDurationRoute(e, userTestDurationUseCase)
 
 }
