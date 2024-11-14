@@ -3,8 +3,6 @@ CREATE TABLE attempt_answers (
     attempt_id CHAR(36),
     question_id CHAR(36),
     selected_answer_option_id CHAR(36),
-    score INT,
-    attempt_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (attempt_id) REFERENCES attempts(id) ON DELETE CASCADE,
