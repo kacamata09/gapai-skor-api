@@ -8,39 +8,39 @@ import (
 )
 
 type TestUsecase struct {
-	UserRepo domain.TestRepository
+	TestRepo domain.TestRepository
 	DB       *sql.DB
 }
 
 func CreateTestUseCase(repo domain.TestRepository) domain.TestUsecase {
 	usecase := TestUsecase{
-		UserRepo: repo,
+		TestRepo: repo,
 	}
 
 	return &usecase
 }
 
 func (uc TestUsecase) GetAllData() ([]domain.Test, error) {
-	data, err := uc.UserRepo.GetAll()
+	data, err := uc.TestRepo.GetAll()
 	return data, err
 }
 
 func (uc TestUsecase) GetByID(id string) (domain.Test, error) {
-	data, err := uc.UserRepo.GetByID(id)
+	data, err := uc.TestRepo.GetByID(id)
 	return data, err
 }
 
 func (uc TestUsecase) Create(input *domain.Test) error {
-	// usernameExisted, _ := uc.UserRepo.GetByUsername(input.Username)
+	// usernameExisted, _ := uc.TestRepo.GetByUsername(input.Username)
 	// if usernameExisted {
 	// 	return "sudah ada coy"
 	// }
 
-	// emailExisted, _ := uc.UserRepo.GetByEmail(input.Email)
+	// emailExisted, _ := uc.TestRepo.GetByEmail(input.Email)
 	// if emailExisted {
 	// 	return "sudah ada coy"
 	// }
 
-	err := uc.UserRepo.Create(input)
+	err := uc.TestRepo.Create(input)
 	return err
 }

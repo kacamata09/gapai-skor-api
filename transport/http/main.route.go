@@ -44,5 +44,25 @@ func StartHttp(e *echo.Echo, db *sql.DB) {
 	userTestDurationRepo := repositoryMySql.CreateRepoUserTestDuration(db)
 	userTestDurationUseCase := usecase.CreateUserTestDurationUseCase(userTestDurationRepo)
 	handler.UserTestDurationRoute(e, userTestDurationUseCase)
+	
+	// question
+	questionRepo := repositoryMySql.CreateRepoQuestion(db)
+	questionUseCase := usecase.CreateQuestionUseCase(questionRepo)
+	handler.QuestionRoute(e, questionUseCase)
+	
+	// answer option
+	answerOptionRepo := repositoryMySql.CreateRepoAnswerOption(db)
+	answerOptionUseCase := usecase.CreateAnswerOptionUseCase(answerOptionRepo)
+	handler.AnswerOptionRoute(e, answerOptionUseCase)
 
+	// attempt
+	attemptRepo := repositoryMySql.CreateRepoAttempt(db)
+	attemptUseCase := usecase.CreateAttemptUseCase(attemptRepo)
+	handler.AttemptRoute(e, attemptUseCase)
+
+	// attempt answer
+	attemptAnswerRepo := repositoryMySql.CreateRepoAttemptAnswer(db)
+	attemptAnswerUseCase := usecase.CreateAttemptAnswerUseCase(attemptAnswerRepo)
+	handler.AttemptAnswerRoute(e, attemptAnswerUseCase)
+	
 }
