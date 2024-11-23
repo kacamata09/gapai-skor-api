@@ -66,6 +66,27 @@ func (repo *repoUser) GetByID(id string) (domain.User, error) {
 	return data, err
 }
 
+func (repo *repoUser) GetByUsername(username string) (domain.User, error) {
+	row := repo.DB.QueryRow("SELECT * FROM users where username=?", username)
+	fmt.Println(username)
+
+	var data domain.User
+
+	err := row.Scan(&data.ID, &data.Fullname, &data.Username, &data.Email, &data.Phone,
+		&data.Password, &data.LastLogin, &data.Role, &data.CreatedAt, &data.UpdatedAt)
+	if err != nil {
+		return data, err
+	}
+	// data.CreatedAt = time.Now().Add(24 * time.Hour)
+	// data.UpdatedAt = time.Now().Add(24 * time.Hour)
+
+	if err := row.Err(); err != nil {
+		return domain.User{}, err
+	}
+	// fmt.Println(data)
+	return data, err
+}
+
 func (repo *repoUser) Create(user *domain.User) error {
 	_, err := repo.DB.Exec("INSERT INTO users (fullname, username, email, phone, password, role) values (?, ?, ?, ?, ?, ?)",
 		user.Fullname, user.Username, user.Email, user.Phone, user.Password, user.Role)

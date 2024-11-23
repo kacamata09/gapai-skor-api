@@ -3,17 +3,19 @@ package usecase
 import (
 	"database/sql"
 	"gapai-skor-api/domain"
+
+	"golang.org/x/crypto/bcrypt"
 	// "time"
 	// "github.com/labstack/echo"
 )
 
 type UserUsecase struct {
 	UserRepo domain.UserRepository
-	DB *sql.DB
+	DB       *sql.DB
 }
 
 func CreateUserUseCase(repo domain.UserRepository) domain.UserUsecase {
-	usecase := UserUsecase {
+	usecase := UserUsecase{
 		UserRepo: repo,
 	}
 
@@ -30,7 +32,7 @@ func (uc UserUsecase) GetByID(id string) (domain.User, error) {
 	return data, err
 }
 
-func (uc UserUsecase) Create(input *domain.User)  error {
+func (uc UserUsecase) Create(input *domain.User) error {
 	// usernameExisted, _ := uc.UserRepo.GetByUsername(input.Username)
 	// if usernameExisted {
 	// 	return "sudah ada coy"
@@ -40,8 +42,14 @@ func (uc UserUsecase) Create(input *domain.User)  error {
 	// if emailExisted {
 	// 	return "sudah ada coy"
 	// }
-	
-	err := uc.UserRepo.Create(input)
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	input.Password = string(hashedPassword)
+
+	err = uc.UserRepo.Create(input)
 	return err
 }
-
