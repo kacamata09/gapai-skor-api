@@ -21,6 +21,7 @@ type UserRepository interface {
 	GetAll() ([]User, error)
 	GetByID(id string) (User, error)
 	Create(user *User) error
+	GetByUsername(username string) (User, error)
 	// Update(ar *Article) error
 	// Delete(id string) error
 }
