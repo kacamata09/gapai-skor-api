@@ -9,7 +9,7 @@ import (
 
 type QuestionUsecase struct {
 	QuestionRepo domain.QuestionRepository
-	DB       *sql.DB
+	DB           *sql.DB
 }
 
 func CreateQuestionUseCase(repo domain.QuestionRepository) domain.QuestionUsecase {
@@ -41,6 +41,6 @@ func (uc QuestionUsecase) Create(input *domain.Question) error {
 	// 	return "sudah ada coy"
 	// }
 
-	err := uc.QuestionRepo.Create(input)
+	err := uc.QuestionRepo.Create(nil, input)
 	return err
 }
