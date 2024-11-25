@@ -64,6 +64,26 @@ func (repo *repoTest) GetByID(id string) (domain.Test, error) {
     }
     // fmt.Println(data)
     return data, err
+
+func (repo *repoTest) GetByTestCode(testCode string) (domain.Test, error) {
+    row := repo.DB.QueryRow("SELECT * FROM tests where test_code=?", testCode)
+    fmt.Println(testCode)
+    
+    var data domain.Test
+    
+    err := row.Scan(&data.ID, &data.TestTitle, &data.TestCode, &data.Description, 
+        &data.CreatedBy, &data.Duration, &data.CreatedAt, &data.UpdatedAt)
+    if err != nil {
+        return data, err
+    }
+    // data.CreatedAt = time.Now().Add(24 * time.Hour)
+    // data.UpdatedAt = time.Now().Add(24 * time.Hour)
+    
+    if err := row.Err(); err != nil {
+        return domain.Test{}, err
+    }
+    // fmt.Println(data)
+    return data, err
 }
 
 func (repo *repoTest) Create(test *domain.Test) error {

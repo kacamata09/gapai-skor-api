@@ -22,6 +22,7 @@ type Test struct {
 type TestRepository interface {
 	GetAll() ([]Test, error)
 	GetByID(id string) (Test, error)
+	GetByTestCode(testCode string) (Test, error)
 	Create(test *Test) error
 	// Update(ar *Article) error
 	// Delete(id string) error
