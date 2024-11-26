@@ -5,6 +5,7 @@ CREATE TABLE questions (
     image_url VARCHAR(255),
     audio_url VARCHAR(255),
     question_type VARCHAR(255),
+    question_number INT,
     points INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

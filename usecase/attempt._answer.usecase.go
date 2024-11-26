@@ -41,6 +41,6 @@ func (uc AttemptAnswerUsecase) Create(input *domain.AttemptAnswer) error {
 	// 	return "sudah ada coy"
 	// }
 
-	err := uc.AttemptAnswerRepo.Create(input)
+	err := uc.AttemptAnswerRepo.Create(nil, input)
 	return err
 }

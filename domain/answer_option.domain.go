@@ -1,7 +1,7 @@
 package domain
 
 import (
-	// "database/sql"
+	"database/sql"
 	// "time"
 	// "github.com/labstack/echo"
 )
@@ -22,7 +22,7 @@ type AnswerOption struct {
 type AnswerOptionRepository interface {
 	GetAll() ([]AnswerOption, error)
 	GetByID(id string) (AnswerOption, error)
-	Create(answerOption *AnswerOption) error
+	Create(tx *sql.Tx, answerOption *AnswerOption) error
 	// Update(ar *Article) error
 	// Delete(id string) error
 }

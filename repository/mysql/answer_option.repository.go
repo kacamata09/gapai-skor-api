@@ -66,9 +66,17 @@ func (repo *repoAnswerOption) GetByID(id string) (domain.AnswerOption, error) {
     return data, err
 }
 
-func (repo *repoAnswerOption) Create(answerOption *domain.AnswerOption) error {
-    _, err := repo.DB.Exec("INSERT INTO answer_options (question_id, content_answer, image_url, audio_url, is_correct) values (?, ?, ?, ?, ?)", 
-    answerOption.QuestionID, answerOption.ContentAnswer, answerOption.ImageURL, 
-            answerOption.AudioURL, answerOption.IsCorrect,)
+func (repo *repoAnswerOption) Create(tx *sql.Tx, answerOption *domain.AnswerOption) (err error) {
+    query := "INSERT INTO answer_options (question_id, content_answer, image_url, audio_url, is_correct) values (?, ?, ?, ?, ?)"
+    if tx != nil {
+        _, err = tx.Exec(query, answerOption.QuestionID, answerOption.ContentAnswer, answerOption.ImageURL, 
+            answerOption.AudioURL, answerOption.IsCorrect)
+    } else {
+        _, err = repo.DB.Exec(query, answerOption.QuestionID, answerOption.ContentAnswer, answerOption.ImageURL, 
+            answerOption.AudioURL, answerOption.IsCorrect)
+    }
+    if err != nil {
+        return err
+    }
     return err
 }

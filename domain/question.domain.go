@@ -13,6 +13,7 @@ type Question struct {
 	ImageURL        string `json:"image_url"`
 	AudioURL        string `json:"audio_url"`
 	QuestionType    string `json:"question_type"`
+	QuestionNumber  string `json:"question_number"`
 	Points          int16  `json:"points"`
 	CreatedAt       string `json:"created_at"`
 	UpdatedAt       string `json:"updated_at"`

@@ -29,7 +29,7 @@ func (repo *repoQuestion) GetAll() ([]domain.Question, error) {
 	for rows.Next() {
 		var question domain.Question
 		err := rows.Scan(&question.ID, &question.TestID, &question.ContentQuestion, &question.ImageURL,
-			&question.AudioURL, &question.QuestionType, &question.Points, &question.CreatedAt, &question.UpdatedAt)
+			&question.AudioURL, &question.QuestionType, &question.Points, &question.QuestionNumber, &question.CreatedAt, &question.UpdatedAt)
 		fmt.Println(err)
 		if err != nil {
 			return data, err
@@ -52,7 +52,7 @@ func (repo *repoQuestion) GetByID(id string) (domain.Question, error) {
 	var data domain.Question
 
 	err := row.Scan(&data.ID, &data.TestID, &data.ContentQuestion, &data.ImageURL,
-		&data.AudioURL, &data.QuestionType, &data.Points, &data.CreatedAt, &data.UpdatedAt)
+		&data.AudioURL, &data.QuestionType, &data.Points, &data.QuestionNumber, &data.CreatedAt, &data.UpdatedAt)
 	if err != nil {
 		return data, err
 	}
@@ -67,13 +67,13 @@ func (repo *repoQuestion) GetByID(id string) (domain.Question, error) {
 }
 
 func (repo *repoQuestion) Create(tx *sql.Tx, question *domain.Question) (err error) {
-	query := "INSERT INTO questions (test_id, content_question, image_url, audio_url, question_type, points) values (?, ?, ?, ?, ?, ?)"
+	query := "INSERT INTO questions (test_id, content_question, image_url, audio_url, question_type, question_number, points) values (?, ?, ?, ?, ?, ?, ?)"
 	if tx != nil {
 		_, err = tx.Exec(query, question.TestID, question.ContentQuestion, question.ImageURL,
-			question.AudioURL, question.QuestionType, question.Points)
+			question.AudioURL, question.QuestionType, question.QuestionNumber, question.Points)
 	} else {
 		_, err = repo.DB.Exec(query, question.TestID, question.ContentQuestion, question.ImageURL,
-			question.AudioURL, question.QuestionType, question.Points)
+			question.AudioURL, question.QuestionType, question.QuestionNumber, question.Points)
 	}
 	if err != nil {
 		return err
