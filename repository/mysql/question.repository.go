@@ -3,7 +3,7 @@ package repositoryMySql
 import (
 	"database/sql"
 	"fmt"
-
+	"github.com/google/uuid"
 	// "time"
 	"gapai-skor-api/domain"
 )
@@ -46,6 +46,10 @@ func (repo *repoQuestion) GetAll() ([]domain.Question, error) {
 }
 
 func (repo *repoQuestion) GetByID(id string) (domain.Question, error) {
+
+	newUUID, _ := uuid.NewRandom()
+    // newUUID, _ := uuid.NewUUID()
+    id = newUUID.String()
 	row := repo.DB.QueryRow("SELECT * FROM questions where id=?", id)
 	fmt.Println(id)
 
@@ -66,17 +70,21 @@ func (repo *repoQuestion) GetByID(id string) (domain.Question, error) {
 	return data, err
 }
 
-func (repo *repoQuestion) Create(tx *sql.Tx, question *domain.Question) (err error) {
-	query := "INSERT INTO questions (test_id, content_question, image_url, audio_url, question_type, question_number, points) values (?, ?, ?, ?, ?, ?, ?)"
+func (repo *repoQuestion) Create(tx *sql.Tx, question *domain.Question) (id string, err error) {
+	newUUID, _ := uuid.NewRandom()
+    // newUUID, _ := uuid.NewUUID()
+    id = newUUID.String()
+
+	query := "INSERT INTO questions (id, test_id, content_question, image_url, audio_url, question_type, question_number, points) values (?, ?, ?, ?, ?, ?, ?, ?)"
 	if tx != nil {
-		_, err = tx.Exec(query, question.TestID, question.ContentQuestion, question.ImageURL,
+		_, err = tx.Exec(query, id, question.TestID, question.ContentQuestion, question.ImageURL,
 			question.AudioURL, question.QuestionType, question.QuestionNumber, question.Points)
 	} else {
-		_, err = repo.DB.Exec(query, question.TestID, question.ContentQuestion, question.ImageURL,
+		_, err = repo.DB.Exec(query, id, question.TestID, question.ContentQuestion, question.ImageURL,
 			question.AudioURL, question.QuestionType, question.QuestionNumber, question.Points)
 	}
 	if err != nil {
-		return err
+		return "", err
 	}
-	return err
+	return id, err
 }

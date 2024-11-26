@@ -26,6 +26,7 @@ func QuestionRoute(e *echo.Echo, uc domain.QuestionUsecase) {
 
 	e.GET("/question", handler.GetAllHandler)
 	e.POST("/question", handler.Create)
+	e.POST("/question_options", handler.CreateWithAnswerOptions)
 	e.GET("/question/:id", handler.GetByIDHandler)
 }
 
@@ -74,4 +75,21 @@ func (h *QuestionHandler) Create(c echo.Context) error {
 		return helper_http.ErrorResponse(c, err)
 	}
 	return helper_http.SuccessResponse(c, data, "success create question")
+}
+
+func (h *QuestionHandler) CreateWithAnswerOptions(c echo.Context) error {
+	var data domain.Question
+
+	err := c.Bind(&data)
+	if err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, err.Error())
+	}
+
+	err = h.usecase.CreateWithAnswerOptions(&data)
+
+	if err != nil {
+		return helper_http.ErrorResponse(c, err)
+	}
+	
+	return helper_http.SuccessResponse(c, data, "success create question with answer_options")
 }

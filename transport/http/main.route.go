@@ -7,7 +7,7 @@ import (
 	"gapai-skor-api/transport/http/middleware"
 	"gapai-skor-api/usecase"
 	"net/http"
-
+	"gapai-skor-api/repository/mysql/helper"
 	"github.com/labstack/echo"
 )
 
@@ -45,15 +45,25 @@ func StartHttp(e *echo.Echo, db *sql.DB) {
 	userTestDurationUseCase := usecase.CreateUserTestDurationUseCase(userTestDurationRepo)
 	handler.UserTestDurationRoute(e, userTestDurationUseCase)
 
-	// question
-	questionRepo := repositoryMySql.CreateRepoQuestion(db)
-	questionUseCase := usecase.CreateQuestionUseCase(questionRepo)
-	handler.QuestionRoute(e, questionUseCase)
-
 	// answer option
 	answerOptionRepo := repositoryMySql.CreateRepoAnswerOption(db)
 	answerOptionUseCase := usecase.CreateAnswerOptionUseCase(answerOptionRepo)
 	handler.AnswerOptionRoute(e, answerOptionUseCase)
+
+
+	// create transaction
+	transaction := helper.CreateTransaction(db)
+
+	// question
+	questionRepo := repositoryMySql.CreateRepoQuestion(db)
+	// questionUseCase := usecase.CreateQuestionUseCase(questionRepo)
+	questionUsecase := usecase.CreateQuestionUseCase(usecase.QuestionUsecase{
+		QuestionRepo: questionRepo,
+		AnswerOptionRepo: answerOptionRepo,
+		Transaction: transaction,
+	})
+	handler.QuestionRoute(e, questionUsecase)
+
 
 	// attempt
 	attemptRepo := repositoryMySql.CreateRepoAttempt(db)

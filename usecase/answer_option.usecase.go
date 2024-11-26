@@ -41,6 +41,6 @@ func (uc AnswerOptionUsecase) Create(input *domain.AnswerOption) error {
 	// 	return "sudah ada coy"
 	// }
 
-	err := uc.AnswerOptionRepo.Create(input)
+	err := uc.AnswerOptionRepo.Create(nil, input)
 	return err
 }
