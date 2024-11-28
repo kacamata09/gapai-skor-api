@@ -90,6 +90,7 @@ func (repo *repoTest) GetByTestCode(testCode string) (domain.Test, error) {
 func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, error) {
 	var data domain.Test
 	var questions []domain.Question
+	var answerOptions []domain.AnswerOption
 
 	query := `
 
@@ -107,13 +108,19 @@ func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, 
 		q.question_type AS question_type,
 		q.points AS points,
 		q.question_number AS question_number,
-		q.created_at AS question_created_at
+		q.created_at AS question_created_at,
+		ao.id AS answer_option_id,
+		ao.content_answer AS content_answer_option
 	FROM 
 		tests t
-	LEFT JOIN 
+	INNER JOIN 
 		questions q
 	ON 
 		t.id = q.test_id
+	INNER JOIN 
+		answer_options ao
+	ON
+		ao.question_id = q.id 
 	WHERE 
 		t.test_code = ?;
 `
@@ -127,6 +134,7 @@ func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, 
 
 	for row.Next() {
 		var question domain.Question
+		var answerOption domain.AnswerOption
 		if err := row.Scan(
 			&data.ID,
 			&data.TestCode,
@@ -142,13 +150,21 @@ func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, 
 			&question.Points,
 			&question.QuestionNumber,
 			&question.CreatedAt,
+			&answerOption.ID,
+			&answerOption.ContentAnswer,
 		); err != nil {
 			return data, err
 		}
+		fmt.Println(answerOption)
 
 		if question.ID != "" {
 			questions = append(questions, question)
 		}
+
+		if answerOption.ID != "" {
+			answerOptions = append(answerOptions, answerOption)
+		}
+
 	}
 
 	if err := row.Err(); err != nil {
@@ -156,6 +172,10 @@ func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, 
 	}
 
 	data.Questions = questions
+
+	for _, ques := range(data.Questions) {
+		ques.AnswerOptions = answerOptionS
+	}
 
 	return data, err
 }
