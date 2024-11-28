@@ -87,6 +87,79 @@ func (repo *repoTest) GetByTestCode(testCode string) (domain.Test, error) {
 	return data, err
 }
 
+func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, error) {
+	var data domain.Test
+	var questions []domain.Question
+
+	query := `
+
+	SELECT 
+		t.id AS test_id,
+		t.test_code AS test_code,
+		t.test_title AS test_title,
+		t.description AS description,
+		t.duration AS duration,
+		t.created_at AS created_at,
+		q.id AS question_id,
+		q.content_question AS content_question,
+		q.image_url AS image_url,
+		q.audio_url AS audio_url,
+		q.question_type AS question_type,
+		q.points AS points,
+		q.question_number AS question_number,
+		q.created_at AS question_created_at
+	FROM 
+		tests t
+	LEFT JOIN 
+		questions q
+	ON 
+		t.id = q.test_id
+	WHERE 
+		t.test_code = ?;
+`
+
+	row, err := repo.DB.Query(query, testCode)
+	if err != nil {
+		return data, err
+	}
+	defer row.Close()
+
+
+	for row.Next() {
+		var question domain.Question
+		if err := row.Scan(
+			&data.ID,
+			&data.TestCode,
+			&data.TestTitle,
+			&data.Description,
+			&data.Duration,
+			&data.CreatedAt,
+			&question.ID,
+			&question.ContentQuestion,
+			&question.ImageURL,
+			&question.AudioURL,
+			&question.QuestionType,
+			&question.Points,
+			&question.QuestionNumber,
+			&question.CreatedAt,
+		); err != nil {
+			return data, err
+		}
+
+		if question.ID != "" {
+			questions = append(questions, question)
+		}
+	}
+
+	if err := row.Err(); err != nil {
+		return domain.Test{}, err
+	}
+
+	data.Questions = questions
+
+	return data, err
+}
+
 func (repo *repoTest) Create(test *domain.Test) error {
 	_, err := repo.DB.Exec("INSERT INTO tests (test_code, test_title, description, created_by, duration) values (?, ?, ?, ?, ?)",
 		test.TestCode, test.TestTitle, test.Description, test.CreatedBy, test.Duration)

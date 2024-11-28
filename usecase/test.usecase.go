@@ -30,6 +30,11 @@ func (uc TestUsecase) GetByID(id string) (domain.Test, error) {
 	return data, err
 }
 
+func (uc TestUsecase) GetByTestCodeWithQuestions(testCode string) (domain.Test, error) {
+	data, err := uc.TestRepo.GetByTestCodeWithQuestions(testCode)
+	return data, err
+}
+
 func (uc TestUsecase) Create(input *domain.Test) error {
 	// usernameExisted, _ := uc.TestRepo.GetByUsername(input.Username)
 	// if usernameExisted {

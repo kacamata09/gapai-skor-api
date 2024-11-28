@@ -27,6 +27,7 @@ func TestRoute(e *echo.Echo, uc domain.TestUsecase) {
 	e.GET("/test", handler.GetAllHandler)
 	e.POST("/test", handler.Create)
 	e.GET("/test/:id", handler.GetByIDHandler)
+	e.GET("/test/code/:test_code", handler.GetByTestCodeWithQuestionsHandler)
 }
 
 func (h *TestHandler) GetAllHandler(c echo.Context) error {
@@ -57,6 +58,25 @@ func (h *TestHandler) GetByIDHandler(c echo.Context) error {
 	}
 
 	resp := helper_http.SuccessResponse(c, data, "success get by id")
+	return resp
+}
+
+func (h *TestHandler) GetByTestCodeWithQuestionsHandler(c echo.Context) error {
+	testCode := c.Param("test_code")
+	// testCode = fmt.Sprintf("%s")
+	// num, err := strconv.Atoi(testCode)
+
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	data, err := h.usecase.GetByTestCodeWithQuestions(testCode)
+
+	if err != nil {
+		return helper_http.ErrorResponse(c, err)
+	}
+
+	resp := helper_http.SuccessResponse(c, data, "success get by test_code")
 	return resp
 }
 
