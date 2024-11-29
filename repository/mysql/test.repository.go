@@ -102,6 +102,7 @@ func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, 
 		t.duration AS duration,
 		t.created_at AS created_at,
 		q.id AS question_id,
+		q.test_id AS question_test_id,
 		q.content_question AS content_question,
 		q.image_url AS image_url,
 		q.audio_url AS audio_url,
@@ -110,6 +111,7 @@ func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, 
 		q.question_number AS question_number,
 		q.created_at AS question_created_at,
 		ao.id AS answer_option_id,
+		ao.question_id AS answer_question_id,
 		ao.content_answer AS content_answer_option
 	FROM 
 		tests t
@@ -143,6 +145,7 @@ func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, 
 			&data.Duration,
 			&data.CreatedAt,
 			&question.ID,
+			&question.TestID,
 			&question.ContentQuestion,
 			&question.ImageURL,
 			&question.AudioURL,
@@ -151,19 +154,22 @@ func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, 
 			&question.QuestionNumber,
 			&question.CreatedAt,
 			&answerOption.ID,
+			&answerOption.QuestionID,
 			&answerOption.ContentAnswer,
 		); err != nil {
 			return data, err
 		}
 		fmt.Println(answerOption)
 
-		if question.ID != "" {
-			questions = append(questions, question)
-		}
-
 		if answerOption.ID != "" {
 			answerOptions = append(answerOptions, answerOption)
 		}
+
+		if question.ID != "" {
+
+			questions = append(questions, question)
+		}
+
 
 	}
 
@@ -171,11 +177,25 @@ func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, 
 		return domain.Test{}, err
 	}
 
-	data.Questions = questions
-
-	for _, ques := range(data.Questions) {
-		ques.AnswerOptions = answerOptionS
+	var filterDuplicateQuestion []string
+	for _, quess := range(questions) {
+		// var ques domain.Question
+		for _, opti := range(answerOptions) {
+			if quess.ID == opti.QuestionID {
+				quess.AnswerOptions = append(quess.AnswerOptions, opti)
+			}
+		}
+		for _, qu := range(data.Questions) {
+			if 
+			data.Questions = append(data.Questions, quess)
+		}
 	}
+
+	// data.Questions = questions
+
+	// for _, ques := range(data.Questions) {
+	// 	ques.AnswerOptions = answerOptions
+	// }
 
 	return data, err
 }
