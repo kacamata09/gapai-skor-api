@@ -4,6 +4,7 @@ import (
 	// "database/sql"
 	"gapai-skor-api/domain"
 	"gapai-skor-api/repository/mysql/helper"
+
 	// "time"
 	"fmt"
 	// "github.com/labstack/echo"
@@ -13,7 +14,7 @@ type QuestionUsecase struct {
 	QuestionRepo domain.QuestionRepository
 	// DB           *sql.DB
 	AnswerOptionRepo domain.AnswerOptionRepository
-	Transaction helper.TransactionFunc
+	Transaction      helper.TransactionFunc
 }
 
 // func CreateQuestionUseCase(repo domain.QuestionRepository) domain.QuestionUsecase {
@@ -21,8 +22,8 @@ type QuestionUsecase struct {
 // 		QuestionRepo: repo,
 // 	}
 
-// 	return &usecase
-// }
+//		return &usecase
+//	}
 func CreateQuestionUseCase(repo QuestionUsecase) domain.QuestionUsecase {
 
 	return &repo
@@ -54,7 +55,7 @@ func (uc QuestionUsecase) Create(input *domain.Question) error {
 }
 
 func (uc QuestionUsecase) CreateWithAnswerOptions(input *domain.Question) error {
-	
+
 	fmt.Println("ah shit")
 	tx, err := uc.Transaction.BeginTransaction()
 	if err != nil {
@@ -63,14 +64,13 @@ func (uc QuestionUsecase) CreateWithAnswerOptions(input *domain.Question) error 
 
 	var questionID string
 
-	if questionID, err = uc.QuestionRepo.Create(tx, input) ; err != nil {
+	if questionID, err = uc.QuestionRepo.Create(tx, input); err != nil {
 		uc.Transaction.RollbackTransaction(tx)
 		fmt.Println("gagal create question")
 		return err
 	}
 
-
-	for _, option := range(input.AnswerOptions) {
+	for _, option := range input.AnswerOptions {
 		option.QuestionID = questionID
 		if err := uc.AnswerOptionRepo.Create(tx, &option); err != nil {
 			uc.Transaction.RollbackTransaction(tx)
@@ -79,8 +79,7 @@ func (uc QuestionUsecase) CreateWithAnswerOptions(input *domain.Question) error 
 		}
 	}
 
-
 	uc.Transaction.CommitTransaction(tx)
-	
+
 	return err
 }

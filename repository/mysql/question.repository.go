@@ -3,7 +3,9 @@ package repositoryMySql
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/google/uuid"
+
 	// "time"
 	"gapai-skor-api/domain"
 )
@@ -48,8 +50,8 @@ func (repo *repoQuestion) GetAll() ([]domain.Question, error) {
 func (repo *repoQuestion) GetByID(id string) (domain.Question, error) {
 
 	newUUID, _ := uuid.NewRandom()
-    // newUUID, _ := uuid.NewUUID()
-    id = newUUID.String()
+	// newUUID, _ := uuid.NewUUID()
+	id = newUUID.String()
 	row := repo.DB.QueryRow("SELECT * FROM questions where id=?", id)
 	fmt.Println(id)
 
@@ -72,8 +74,8 @@ func (repo *repoQuestion) GetByID(id string) (domain.Question, error) {
 
 func (repo *repoQuestion) Create(tx *sql.Tx, question *domain.Question) (id string, err error) {
 	newUUID, _ := uuid.NewRandom()
-    // newUUID, _ := uuid.NewUUID()
-    id = newUUID.String()
+	// newUUID, _ := uuid.NewUUID()
+	id = newUUID.String()
 
 	query := "INSERT INTO questions (id, test_id, content_question, image_url, audio_url, question_type, question_number, points) values (?, ?, ?, ?, ?, ?, ?, ?)"
 	if tx != nil {

@@ -9,7 +9,7 @@ import (
 
 type AttemptAnswerUsecase struct {
 	AttemptAnswerRepo domain.AttemptAnswerRepository
-	DB       *sql.DB
+	DB                *sql.DB
 }
 
 func CreateAttemptAnswerUseCase(repo domain.AttemptAnswerRepository) domain.AttemptAnswerUsecase {
@@ -41,6 +41,6 @@ func (uc AttemptAnswerUsecase) Create(input *domain.AttemptAnswer) error {
 	// 	return "sudah ada coy"
 	// }
 
-	err := uc.AttemptAnswerRepo.Create(input)
+	err := uc.AttemptAnswerRepo.Create(nil, input)
 	return err
 }
