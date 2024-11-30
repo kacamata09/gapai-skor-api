@@ -5,7 +5,7 @@ package domain
 // "github.com/labstack/echo"
 
 type LoginResponse struct {
-	Token    string `json:"id"`
+	Token    string `json:"access_token"`
 	DataUser User   `json:"data_user"`
 }
 
