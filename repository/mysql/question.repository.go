@@ -84,6 +84,74 @@ func (repo *repoQuestion) GetAll() ([]domain.Question, error) {
 	return data, nil
 }
 
+func (repo *repoQuestion) GetByTestID(id string) ([]domain.Question, error) {
+
+	rows, err := repo.DB.Query(`
+		SELECT 
+			q.id AS question_id,
+			q.test_id AS test_id,
+			q.content_question AS content_question,
+			q.image_url AS image_url,
+			q.audio_url AS audio_url,
+			q.question_type AS question_type,
+			q.points AS points,
+			q.question_number AS question_number,
+			q.created_at AS question_created_at,
+			ao.id AS answer_option_id,
+			ao.question_id AS question_ao_id,
+			ao.content_answer AS content_answer_option 
+		FROM questions q 
+		LEFT JOIN answer_options ao 
+		ON ao.question_id = q.id
+		WHERE q.test_id = ?
+	`, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	questionsMap := make(map[string]domain.Question)
+
+	for rows.Next() {
+		var question domain.Question
+		var answerOption domain.AnswerOption
+
+		err := rows.Scan(
+			&question.ID, &question.TestID, &question.ContentQuestion, &question.ImageURL,
+			&question.AudioURL, &question.QuestionType, &question.Points, &question.QuestionNumber,
+			&question.CreatedAt, &answerOption.ID, &answerOption.QuestionID, &answerOption.ContentAnswer,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		q, exists := questionsMap[question.ID]
+		if !exists {
+			question.AnswerOptions = []domain.AnswerOption{}
+			questionsMap[question.ID] = question
+		} else {
+			question = q
+		}
+
+		if answerOption.ID != "" {
+			question.AnswerOptions = append(question.AnswerOptions, answerOption)
+			questionsMap[question.ID] = question
+		}
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	var data []domain.Question
+	for _, question := range questionsMap {
+		data = append(data, question)
+	}
+
+	return data, nil
+
+}
+
 func (repo *repoQuestion) GetByID(id string) (domain.Question, error) {
 
 	// newUUID, _ := uuid.NewRandom()

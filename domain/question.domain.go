@@ -22,6 +22,7 @@ type Question struct {
 
 type QuestionRepository interface {
 	GetAll() ([]Question, error)
+	GetByTestID(id string) ([]Question, error)
 	GetByID(id string) (Question, error)
 	Create(tx *sql.Tx, question *Question) (string, error)
 	// Update(ar *Article) error
@@ -31,6 +32,7 @@ type QuestionRepository interface {
 type QuestionUsecase interface {
 	GetAllData() ([]Question, error)
 	GetByID(id string) (Question, error)
+	GetByTestID(id string) ([]Question, error)
 	Create(question *Question) error
 	CreateWithAnswerOptions(question *Question) error
 }
