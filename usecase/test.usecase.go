@@ -30,9 +30,48 @@ func (uc TestUsecase) GetByID(id string) (domain.Test, error) {
 	return data, err
 }
 
-func (uc TestUsecase) GetByTestCodeWithQuestions(testCode string) (domain.Test, error) {
+func (uc TestUsecase) GetByTestCodeWithQuestions(testCode string) (domain.TestWithQuestion, error) {
 	data, err := uc.TestRepo.GetByTestCodeWithQuestions(testCode)
-	return data, err
+	newData := domain.TestWithQuestion {
+		ID : data.ID,
+		TestCode : data.TestCode,
+		TestTitle : data.TestTitle,
+		Description : data.Description,
+		CreatedBy : data.CreatedBy,
+		Duration : data.Duration,
+	} 
+
+	
+	sessions := [3]domain.QuestionSession{
+		{ID : 1, SessionType : "Listening"},
+		{ID : 2, SessionType : "Structure"},
+		{ID : 3, SessionType : "Reading"},
+	}
+	for _, question := range(data.Questions) {
+		newFormatQuestion := domain.QuestionWithOptions{
+			ID
+			ContentQuestion
+			ImageURL
+			AudioURL
+			QuestionType
+			QuestionNumber
+			SelectedAnswer
+			AnswerOptions
+			PlayCount
+		}
+		if question.QuestionType == "Listening" {
+			sessions[0].Questions = append(sessions[0].Questions, question)
+		}
+		if question.QuestionType == "Structure" {
+			sessions[1].Questions = append(sessions[1].Questions, question)
+		}
+		if question.QuestionType == "Reading" {
+			sessions[2].Questions = append(sessions[2].Questions, question)
+		}
+	}
+
+	newData.Sessions = sessions
+	return newData, err
 }
 
 func (uc TestUsecase) Create(input *domain.Test) error {

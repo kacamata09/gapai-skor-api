@@ -20,6 +20,16 @@ type Test struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
+type TestWithQuestion struct {
+	ID string `json:"id"`
+	TestCode string `json:"test_code"`
+	TestTitle string `json:"test_title"`
+	Description string `json:"description"`
+	CreatedBy string `json:"created_by"`
+	Duration int16 `json:"duration"`
+	Sessions []QuestionSession `json:"sessions"`
+}
+
 type TestRepository interface {
 	GetAll() ([]Test, error)
 	GetByID(id string) (Test, error)
