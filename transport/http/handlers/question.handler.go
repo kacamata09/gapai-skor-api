@@ -28,6 +28,8 @@ func QuestionRoute(e *echo.Echo, uc domain.QuestionUsecase) {
 	e.POST("/question", handler.Create)
 	e.POST("/question_options", handler.CreateWithAnswerOptions)
 	e.GET("/question/:id", handler.GetByIDHandler)
+	e.GET("/question/test_id/:id", handler.GetByTestIDHandler)
+
 }
 
 func (h *QuestionHandler) GetAllHandler(c echo.Context) error {
@@ -52,6 +54,25 @@ func (h *QuestionHandler) GetByIDHandler(c echo.Context) error {
 	// }
 
 	data, err := h.usecase.GetByID(id)
+
+	if err != nil {
+		return helper_http.ErrorResponse(c, err)
+	}
+
+	resp := helper_http.SuccessResponse(c, data, "success get by id")
+	return resp
+}
+
+func (h *QuestionHandler) GetByTestIDHandler(c echo.Context) error {
+	id := c.Param("id")
+	// id = fmt.Sprintf("%s")
+	// num, err := strconv.Atoi(id)
+
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	data, err := h.usecase.GetByTestID(id)
 
 	if err != nil {
 		return helper_http.ErrorResponse(c, err)
@@ -90,6 +111,6 @@ func (h *QuestionHandler) CreateWithAnswerOptions(c echo.Context) error {
 	if err != nil {
 		return helper_http.ErrorResponse(c, err)
 	}
-	
+
 	return helper_http.SuccessResponse(c, data, "success create question with answer_options")
 }

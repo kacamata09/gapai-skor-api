@@ -9,7 +9,7 @@ import (
 
 type AnswerOptionUsecase struct {
 	AnswerOptionRepo domain.AnswerOptionRepository
-	DB       *sql.DB
+	DB               *sql.DB
 }
 
 func CreateAnswerOptionUseCase(repo domain.AnswerOptionRepository) domain.AnswerOptionUsecase {

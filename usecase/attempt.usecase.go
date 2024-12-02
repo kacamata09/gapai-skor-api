@@ -3,13 +3,17 @@ package usecase
 import (
 	"database/sql"
 	"gapai-skor-api/domain"
+
 	// "time"
 	// "github.com/labstack/echo"
+	"gapai-skor-api/repository/mysql/helper"
 )
 
 type AttemptUsecase struct {
-	AttemptRepo domain.AttemptRepository
-	DB       *sql.DB
+	AttemptRepo        domain.AttemptRepository
+	DB                 *sql.DB
+	Transaction        helper.TransactionFunc
+	AtttemptAnswerRepo domain.AttemptAnswerRepository
 }
 
 func CreateAttemptUseCase(repo domain.AttemptRepository) domain.AttemptUsecase {
@@ -41,6 +45,6 @@ func (uc AttemptUsecase) Create(input *domain.Attempt) error {
 	// 	return "sudah ada coy"
 	// }
 
-	err := uc.AttemptRepo.Create(input)
+	_, err := uc.AttemptRepo.Create(nil, input)
 	return err
 }

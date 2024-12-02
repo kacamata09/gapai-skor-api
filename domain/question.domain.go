@@ -7,21 +7,22 @@ import (
 )
 
 type Question struct {
-	ID              string `json:"id"`
-	TestID          string `json:"test_id"`
-	ContentQuestion string `json:"content_question"`
-	ImageURL        string `json:"image_url"`
-	AudioURL        string `json:"audio_url"`
-	QuestionType    string `json:"question_type"`
-	QuestionNumber  int16  `json:"question_number"`
-	Points          int16  `json:"points"`
-	AnswerOptions	[]AnswerOption	`json:"answer_options"`
-	CreatedAt       string `json:"created_at"`
-	UpdatedAt       string `json:"updated_at"`
+	ID              string         `json:"id"`
+	TestID          string         `json:"test_id"`
+	ContentQuestion string         `json:"content_question"`
+	ImageURL        string         `json:"image_url"`
+	AudioURL        string         `json:"audio_url"`
+	QuestionType    string         `json:"question_type"`
+	QuestionNumber  int16          `json:"question_number"`
+	Points          int16          `json:"points"`
+	AnswerOptions   []AnswerOption `json:"answer_options"`
+	CreatedAt       string         `json:"created_at"`
+	UpdatedAt       string         `json:"updated_at"`
 }
 
 type QuestionRepository interface {
 	GetAll() ([]Question, error)
+	GetByTestID(id string) ([]Question, error)
 	GetByID(id string) (Question, error)
 	Create(tx *sql.Tx, question *Question) (string, error)
 	// Update(ar *Article) error
@@ -31,6 +32,7 @@ type QuestionRepository interface {
 type QuestionUsecase interface {
 	GetAllData() ([]Question, error)
 	GetByID(id string) (Question, error)
+	GetByTestID(id string) ([]Question, error)
 	Create(question *Question) error
 	CreateWithAnswerOptions(question *Question) error
 }
