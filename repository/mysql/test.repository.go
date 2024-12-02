@@ -89,11 +89,10 @@ func (repo *repoTest) GetByTestCode(testCode string) (domain.Test, error) {
 
 func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, error) {
 	var data domain.Test
-	var questions []domain.Question
+	var questionsMap = make(map[string]domain.Question) 
 	var answerOptions []domain.AnswerOption
 
 	query := `
-
 	SELECT 
 		t.id AS test_id,
 		t.test_code AS test_code,
@@ -119,25 +118,25 @@ func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, 
 		questions q
 	ON 
 		t.id = q.test_id
-	INNER JOIN 
+	LEFT JOIN 
 		answer_options ao
 	ON
-		ao.question_id = q.id 
+		q.id = ao.question_id
 	WHERE 
 		t.test_code = ?;
-`
+	`
 
-	row, err := repo.DB.Query(query, testCode)
+	rows, err := repo.DB.Query(query, testCode)
 	if err != nil {
 		return data, err
 	}
-	defer row.Close()
+	defer rows.Close()
 
-
-	for row.Next() {
+	for rows.Next() {
 		var question domain.Question
 		var answerOption domain.AnswerOption
-		if err := row.Scan(
+
+		if err := rows.Scan(
 			&data.ID,
 			&data.TestCode,
 			&data.TestTitle,
@@ -159,46 +158,35 @@ func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, 
 		); err != nil {
 			return data, err
 		}
-		fmt.Println(answerOption)
+
+		if _, exists := questionsMap[question.ID]; !exists {
+			questionsMap[question.ID] = question
+		}
 
 		if answerOption.ID != "" {
 			answerOptions = append(answerOptions, answerOption)
 		}
-
-		if question.ID != "" {
-
-			questions = append(questions, question)
-		}
-
-
 	}
 
-	if err := row.Err(); err != nil {
-		return domain.Test{}, err
+	fmt.Println(answerOptions)
+
+	if err := rows.Err(); err != nil {
+		return data, err
 	}
 
-	var filterDuplicateQuestion []string
-	for _, quess := range(questions) {
-		// var ques domain.Question
-		for _, opti := range(answerOptions) {
-			if quess.ID == opti.QuestionID {
-				quess.AnswerOptions = append(quess.AnswerOptions, opti)
-			}
-		}
-		for _, qu := range(data.Questions) {
-			if 
-			data.Questions = append(data.Questions, quess)
-		}
+	for _, answerOption := range answerOptions {
+		question := questionsMap[answerOption.QuestionID]
+		question.AnswerOptions = append(question.AnswerOptions, answerOption)
+		questionsMap[answerOption.QuestionID] = question
 	}
 
-	// data.Questions = questions
+	for _, question := range questionsMap {
+		data.Questions = append(data.Questions, question)
+	}
 
-	// for _, ques := range(data.Questions) {
-	// 	ques.AnswerOptions = answerOptions
-	// }
-
-	return data, err
+	return data, nil
 }
+
 
 func (repo *repoTest) Create(test *domain.Test) error {
 	_, err := repo.DB.Exec("INSERT INTO tests (test_code, test_title, description, created_by, duration) values (?, ?, ?, ?, ?)",
