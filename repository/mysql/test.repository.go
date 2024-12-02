@@ -89,7 +89,7 @@ func (repo *repoTest) GetByTestCode(testCode string) (domain.Test, error) {
 
 func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, error) {
 	var data domain.Test
-	var questionsMap = make(map[string]domain.Question) 
+	var questionsMap = make(map[string]domain.Question)
 	var answerOptions []domain.AnswerOption
 
 	query := `
@@ -123,7 +123,8 @@ func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, 
 	ON
 		q.id = ao.question_id
 	WHERE 
-		t.test_code = ?;
+		t.test_code = ?
+	ORDER BY q.question_number DESC;
 	`
 
 	rows, err := repo.DB.Query(query, testCode)
@@ -186,7 +187,6 @@ func (repo *repoTest) GetByTestCodeWithQuestions(testCode string) (domain.Test, 
 
 	return data, nil
 }
-
 
 func (repo *repoTest) Create(test *domain.Test) error {
 	_, err := repo.DB.Exec("INSERT INTO tests (test_code, test_title, description, created_by, duration) values (?, ?, ?, ?, ?)",

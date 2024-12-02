@@ -3,6 +3,7 @@ package usecase
 import (
 	"database/sql"
 	"gapai-skor-api/domain"
+	"sort"
 	// "time"
 	// "github.com/labstack/echo"
 )
@@ -32,43 +33,56 @@ func (uc TestUsecase) GetByID(id string) (domain.Test, error) {
 
 func (uc TestUsecase) GetByTestCodeWithQuestions(testCode string) (domain.TestWithQuestion, error) {
 	data, err := uc.TestRepo.GetByTestCodeWithQuestions(testCode)
-	newData := domain.TestWithQuestion {
-		ID : data.ID,
-		TestCode : data.TestCode,
-		TestTitle : data.TestTitle,
-		Description : data.Description,
-		CreatedBy : data.CreatedBy,
-		Duration : data.Duration,
-	} 
-
-	
-	sessions := [3]domain.QuestionSession{
-		{ID : 1, SessionType : "Listening"},
-		{ID : 2, SessionType : "Structure"},
-		{ID : 3, SessionType : "Reading"},
+	newData := domain.TestWithQuestion{
+		ID:          data.ID,
+		TestCode:    data.TestCode,
+		TestTitle:   data.TestTitle,
+		Description: data.Description,
+		CreatedBy:   data.CreatedBy,
+		Duration:    data.Duration,
 	}
-	for _, question := range(data.Questions) {
+
+	sessions := []domain.QuestionSession{
+		{ID: 1, SessionType: "Listening"},
+		{ID: 2, SessionType: "Structure"},
+		{ID: 3, SessionType: "Reading"},
+	}
+	for _, question := range data.Questions {
 		newFormatQuestion := domain.QuestionWithOptions{
-			ID
-			ContentQuestion
-			ImageURL
-			AudioURL
-			QuestionType
-			QuestionNumber
-			SelectedAnswer
-			AnswerOptions
-			PlayCount
+			ID:              question.ID,
+			ContentQuestion: question.ContentQuestion,
+			ImageURL:        question.ImageURL,
+			AudioURL:        question.AudioURL,
+			QuestionNumber:  question.QuestionNumber,
+			SelectedAnswer:  "a",
+			PlayCount:       0,
 		}
+
+		for _, ao := range question.AnswerOptions {
+			newFormatQuestion.AnswerOptions = append(newFormatQuestion.AnswerOptions, ao.ContentAnswer)
+		}
+
 		if question.QuestionType == "Listening" {
-			sessions[0].Questions = append(sessions[0].Questions, question)
+			sessions[0].Questions = append(sessions[0].Questions, newFormatQuestion)
 		}
 		if question.QuestionType == "Structure" {
-			sessions[1].Questions = append(sessions[1].Questions, question)
+			sessions[1].Questions = append(sessions[1].Questions, newFormatQuestion)
 		}
 		if question.QuestionType == "Reading" {
-			sessions[2].Questions = append(sessions[2].Questions, question)
+			sessions[2].Questions = append(sessions[2].Questions, newFormatQuestion)
 		}
 	}
+
+	sort.Slice(sessions[0].Questions, func(i, j int) bool {
+		return sessions[0].Questions[i].QuestionNumber < sessions[0].Questions[j].QuestionNumber
+	})
+	sort.Slice(sessions[1].Questions, func(i, j int) bool {
+		return sessions[1].Questions[i].QuestionNumber < sessions[1].Questions[j].QuestionNumber
+	})
+
+	sort.Slice(sessions[2].Questions, func(i, j int) bool {
+		return sessions[2].Questions[i].QuestionNumber < sessions[2].Questions[j].QuestionNumber
+	})
 
 	newData.Sessions = sessions
 	return newData, err

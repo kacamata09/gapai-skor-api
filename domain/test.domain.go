@@ -1,33 +1,29 @@
 package domain
 
-import (
-	// "database/sql"
-	// "time"
-	// "github.com/labstack/echo"
-)
-
-
+// "database/sql"
+// "time"
+// "github.com/labstack/echo"
 
 type Test struct {
-	ID string `json:"id"`
-	TestCode string `json:"test_code"`
-	TestTitle string `json:"test_title"`
-	Description string `json:"description"`
-	CreatedBy string `json:"created_by"`
-	Duration int16 `json:"duration"`
-	Questions []Question `json:"questions"`
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
+	ID          string     `json:"id"`
+	TestCode    string     `json:"test_code"`
+	TestTitle   string     `json:"test_title"`
+	Description string     `json:"description"`
+	CreatedBy   string     `json:"created_by"`
+	Duration    int16      `json:"duration"`
+	Questions   []Question `json:"questions"`
+	CreatedAt   string     `json:"created_at"`
+	UpdatedAt   string     `json:"updated_at"`
 }
 
 type TestWithQuestion struct {
-	ID string `json:"id"`
-	TestCode string `json:"test_code"`
-	TestTitle string `json:"test_title"`
-	Description string `json:"description"`
-	CreatedBy string `json:"created_by"`
-	Duration int16 `json:"duration"`
-	Sessions []QuestionSession `json:"sessions"`
+	ID          string            `json:"id"`
+	TestCode    string            `json:"test_code"`
+	TestTitle   string            `json:"test_title"`
+	Description string            `json:"description"`
+	CreatedBy   string            `json:"created_by"`
+	Duration    int16             `json:"duration"`
+	Sessions    []QuestionSession `json:"sessions"`
 }
 
 type TestRepository interface {
@@ -43,6 +39,6 @@ type TestRepository interface {
 type TestUsecase interface {
 	GetAllData() ([]Test, error)
 	GetByID(id string) (Test, error)
-	GetByTestCodeWithQuestions(id string) (Test, error)
+	GetByTestCodeWithQuestions(id string) (TestWithQuestion, error)
 	Create(test *Test) error
 }

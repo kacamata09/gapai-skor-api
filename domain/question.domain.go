@@ -21,23 +21,21 @@ type Question struct {
 }
 
 type QuestionWithOptions struct {
-	ID              string         `json:"id"`
-	ContentQuestion string         `json:"text"`
-	ImageURL        string         `json:"image"`
-	AudioURL        string         `json:"audio"`
-	QuestionType    string         `json:"question_type"`
-	QuestionNumber  int16          `json:"question_number"`
-	SelectedAnswer  string         `json:"selected_answer"`
-	AnswerOptions   []string		`json:"options"`
-	PlayCount       int8         	`json:"play_count"`
+	ID              string   `json:"id"`
+	ContentQuestion string   `json:"text"`
+	ImageURL        string   `json:"image"`
+	AudioURL        string   `json:"audio"`
+	QuestionNumber  int16    `json:"question_number"`
+	SelectedAnswer  string   `json:"selected_answer"`
+	AnswerOptions   []string `json:"options"`
+	PlayCount       int8     `json:"play_count"`
 }
 
 type QuestionSession struct {
-	ID              int16         `json:"id"`
-	SessionType string         		`json:"session_type"`
-	Questions []QuestionWithOptions `json:"questions"`
+	ID          int16                 `json:"id"`
+	SessionType string                `json:"session_type"`
+	Questions   []QuestionWithOptions `json:"questions"`
 }
-
 
 type QuestionRepository interface {
 	GetAll() ([]Question, error)
