@@ -6,6 +6,8 @@ import (
 
 	// "time"
 	"gapai-skor-api/domain"
+
+	"github.com/google/uuid"
 )
 
 type repoUser struct {
@@ -88,7 +90,11 @@ func (repo *repoUser) GetByUsername(username string) (domain.User, error) {
 }
 
 func (repo *repoUser) Create(user *domain.User) error {
-	_, err := repo.DB.Exec("INSERT INTO users (fullname, username, email, phone, password, role) values (?, ?, ?, ?, ?, ?)",
-		user.Fullname, user.Username, user.Email, user.Phone, user.Password, user.Role)
+	newUUID, _ := uuid.NewRandom()
+	// newUUID, _ := uuid.NewUUID()
+	id := newUUID.String()
+
+	_, err := repo.DB.Exec("INSERT INTO users (id, fullname, username, email, phone, password, role) values (?, ?, ?, ?, ?, ?, ?)",
+		id, user.Fullname, user.Username, user.Email, user.Phone, user.Password, user.Role)
 	return err
 }

@@ -6,6 +6,8 @@ import (
 
 	// "time"
 	"gapai-skor-api/domain"
+
+	"github.com/google/uuid"
 )
 
 type repoAnswerOption struct {
@@ -67,9 +69,12 @@ func (repo *repoAnswerOption) GetByID(id string) (domain.AnswerOption, error) {
 }
 
 func (repo *repoAnswerOption) Create(tx *sql.Tx, answerOption *domain.AnswerOption) (err error) {
-	query := "INSERT INTO answer_options (question_id, content_answer, image_url, audio_url, is_correct) values (?, ?, ?, ?, ?)"
+	newUUID, _ := uuid.NewRandom()
+	// newUUID, _ := uuid.NewUUID()
+	id := newUUID.String()
+	query := "INSERT INTO answer_options (id, question_id, content_answer, image_url, audio_url, is_correct) values (?, ?, ?, ?, ?, ?)"
 	if tx != nil {
-		_, err = tx.Exec(query, answerOption.QuestionID, answerOption.ContentAnswer, answerOption.ImageURL,
+		_, err = tx.Exec(query, id, answerOption.QuestionID, answerOption.ContentAnswer, answerOption.ImageURL,
 			answerOption.AudioURL, answerOption.IsCorrect)
 	} else {
 		_, err = repo.DB.Exec(query, answerOption.QuestionID, answerOption.ContentAnswer, answerOption.ImageURL,

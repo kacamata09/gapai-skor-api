@@ -6,6 +6,8 @@ import (
 
 	// "time"
 	"gapai-skor-api/domain"
+
+	"github.com/google/uuid"
 )
 
 type repoUserTestDuration struct {
@@ -67,7 +69,11 @@ func (repo *repoUserTestDuration) GetByID(id string) (domain.UserTestDuration, e
 }
 
 func (repo *repoUserTestDuration) Create(test *domain.UserTestDuration) error {
-	_, err := repo.DB.Exec("INSERT INTO user_test_durations (user_id, test_id, start_time, end_time, duration, status) values (?, ?, ?, ?, ?, ?)",
-		test.UserID, test.TestID, test.StartTime, test.EndTime, test.Duration, test.Status)
+	newUUID, _ := uuid.NewRandom()
+	// newUUID, _ := uuid.NewUUID()
+	id := newUUID.String()
+
+	_, err := repo.DB.Exec("INSERT INTO user_test_durations (id, user_id, test_id, start_time, end_time, duration, status) values (?, ?, ?, ?, ?, ?, ?)",
+		id, test.UserID, test.TestID, test.StartTime, test.EndTime, test.Duration, test.Status)
 	return err
 }

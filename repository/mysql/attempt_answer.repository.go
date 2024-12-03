@@ -6,6 +6,8 @@ import (
 
 	// "time"
 	"gapai-skor-api/domain"
+
+	"github.com/google/uuid"
 )
 
 type repoAttemptAnswer struct {
@@ -67,10 +69,13 @@ func (repo *repoAttemptAnswer) GetByID(id string) (domain.AttemptAnswer, error) 
 }
 
 func (repo *repoAttemptAnswer) Create(tx *sql.Tx, attemptAnswer *domain.AttemptAnswer) (err error) {
+	newUUID, _ := uuid.NewRandom()
+	// newUUID, _ := uuid.NewUUID()
+	id := newUUID.String()
 
-	query := "INSERT INTO attempt_answers (attempt_id, question_id, selected_answer_option_id) values (?, ?, ?)"
+	query := "INSERT INTO attempt_answers (id, attempt_id, question_id, selected_answer_option_id) values (?, ?, ?, ?)"
 	if tx != nil {
-		_, err = tx.Exec(query, attemptAnswer.AttemptID, attemptAnswer.QuestionID,
+		_, err = tx.Exec(query, id, attemptAnswer.AttemptID, attemptAnswer.QuestionID,
 			attemptAnswer.SelectedAnswerOptionID)
 	} else {
 		_, err = repo.DB.Exec(query, attemptAnswer.AttemptID, attemptAnswer.QuestionID,
