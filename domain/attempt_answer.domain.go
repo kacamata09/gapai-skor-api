@@ -19,6 +19,8 @@ type AttemptAnswerRepository interface {
 	GetAll() ([]AttemptAnswer, error)
 	GetByID(id string) (AttemptAnswer, error)
 	Create(tx *sql.Tx, attempt_answer *AttemptAnswer) error
+	Update(tx *sql.Tx, attempt_answer *AttemptAnswer) error
+	VerifAttemptAnswerIsThere(attempt_answer *AttemptAnswer) (string, error)
 	// Update(ar *Article) error
 	// Delete(id string) error
 }

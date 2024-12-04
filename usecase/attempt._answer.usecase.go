@@ -40,7 +40,14 @@ func (uc AttemptAnswerUsecase) Create(input *domain.AttemptAnswer) error {
 	// if emailExisted {
 	// 	return "sudah ada coy"
 	// }
+	id, err := uc.AttemptAnswerRepo.VerifAttemptAnswerIsThere(input)
+	if id == "" {
+		err = uc.AttemptAnswerRepo.Create(nil, input)
+	} else {
+		input.ID = id
+		err = uc.AttemptAnswerRepo.Update(nil, input)
+		}
 
-	err := uc.AttemptAnswerRepo.Create(nil, input)
+	err = uc.AttemptAnswerRepo.Create(nil, input)
 	return err
 }

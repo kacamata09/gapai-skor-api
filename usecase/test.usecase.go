@@ -60,6 +60,7 @@ func (uc TestUsecase) GetByTestCodeWithQuestions(testCode string) (domain.TestWi
 
 		for _, ao := range question.AnswerOptions {
 			newFormatQuestion.AnswerOptions = append(newFormatQuestion.AnswerOptions, ao.ContentAnswer)
+			newFormatQuestion.AnswerOptionsID = append(newFormatQuestion.AnswerOptionsID, ao.ID)
 		}
 
 		if question.QuestionType == "Listening" {

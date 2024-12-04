@@ -78,11 +78,44 @@ func (repo *repoAttemptAnswer) Create(tx *sql.Tx, attemptAnswer *domain.AttemptA
 		_, err = tx.Exec(query, id, attemptAnswer.AttemptID, attemptAnswer.QuestionID,
 			attemptAnswer.SelectedAnswerOptionID)
 	} else {
-		_, err = repo.DB.Exec(query, attemptAnswer.AttemptID, attemptAnswer.QuestionID,
+		_, err = repo.DB.Exec(query, id, attemptAnswer.AttemptID, attemptAnswer.QuestionID,
 			attemptAnswer.SelectedAnswerOptionID)
 	}
 	if err != nil {
 		return err
 	}
 	return err
+}
+
+func (repo *repoAttemptAnswer) Update(tx *sql.Tx, attemptAnswer *domain.AttemptAnswer) (err error) {
+
+	query := "UPDATE attempt_answers SET selected_answer_option_id = ? WHERE id = ?"
+	if tx != nil {
+		_, err = tx.Exec(query, attemptAnswer.SelectedAnswerOptionID, attemptAnswer.AttemptID)
+	} else {
+		_, err = repo.DB.Exec(query, attemptAnswer.SelectedAnswerOptionID, attemptAnswer.AttemptID)
+	}
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func (repo *repoAttemptAnswer) VerifAttemptAnswerIsThere(attemptAnswer *domain.AttemptAnswer) (id string, err error) {
+
+	query := "SELECT id FROM attempt_answers WHERE selected_answer_option_id = ? AND question_id = ? AND attempt_id = ?"
+	row := repo.DB.QueryRow(query, attemptAnswer.SelectedAnswerOptionID, attemptAnswer.QuestionID, attemptAnswer.AttemptID)
+
+	var data domain.AttemptAnswer
+	err = row.Scan(&data.ID)
+	
+	fmt.Println(data, "attempt id")
+
+	if err != nil {
+		return "", err
+	}
+
+	id = data.ID
+
+	return id, err
 }

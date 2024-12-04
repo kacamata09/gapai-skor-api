@@ -28,6 +28,7 @@ type QuestionWithOptions struct {
 	QuestionNumber  int16    `json:"question_number"`
 	SelectedAnswer  string   `json:"selected_answer"`
 	AnswerOptions   []string `json:"options"`
+	AnswerOptionsID []string `json:"answer_id"`
 	PlayCount       int8     `json:"play_count"`
 }
 
