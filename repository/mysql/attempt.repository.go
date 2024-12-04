@@ -47,6 +47,69 @@ func (repo *repoAttempt) GetAll() ([]domain.Attempt, error) {
 	return data, err
 }
 
+func (repo *repoAttempt) GetAttemptWithAttemptAnswer(id string) (domain.Attempt, error) {
+
+	query := `
+	SELECT 
+		att.id AS attempt_id,
+		att.test_id AS test_id,
+		att.user_id AS user_id,
+		att.score AS score,
+		att.attempt_date AS attempt_date,
+		att.updated_at AS updated_at,
+		aa.id AS attempt_answer_id,
+		aa.attempt_id AS aa_attempt_id,
+		aa.selected_answer_option_id AS selected_answer_option_id,
+		ao.id AS answer_option_id,
+		ao.is_correct AS is_correct
+	FROM 
+		attempts att
+	LEFT JOIN 
+		attempt_answers aa
+	ON 
+		att.id = aa.attempt_id
+	LEFT JOIN 
+		answer_options ao
+	ON
+		ao.id = aa.selected_answer_option_id
+	WHERE 
+		att.id = ?;
+		`
+
+	var data domain.Attempt
+	var attemptAnswers []domain.AttemptAnswer
+	rows, err := repo.DB.Query(query, id)
+	if err != nil {
+		return data, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var attemptAnswer domain.AttemptAnswer
+		var answerOption domain.AnswerOption
+		err := rows.Scan(&data.ID, &data.TestID, &data.UserID, &data.Score,
+			&data.AttemptDate, &data.UpdatedAt, &attemptAnswer.ID, &attemptAnswer.AttemptID,
+			&attemptAnswer.SelectedAnswerOptionID, &answerOption.ID, &answerOption.IsCorrect)
+		fmt.Println(err)
+		if err != nil {
+			return data, err
+		}
+		attemptAnswer.IsCorrect = answerOption.IsCorrect
+		fmt.Println(attemptAnswer)
+		// attemptAnswer.QuestionType = answerOption.QuestionType
+
+		// attempt.CreatedAt = time.Now().Add(24 * time.Hour)
+		// attempt.UpdatedAt = time.Now().Add(24 * time.Hour)
+		attemptAnswers = append(attemptAnswers, attemptAnswer)
+	}
+
+	data.AttemptAnswers = attemptAnswers
+	if err := rows.Err(); err != nil {
+		return data, err
+	}
+	return data, err
+}
+
 func (repo *repoAttempt) GetByID(id string) (domain.Attempt, error) {
 	row := repo.DB.QueryRow("SELECT * FROM attempts where id=?", id)
 	fmt.Println(id)
@@ -68,7 +131,6 @@ func (repo *repoAttempt) GetByID(id string) (domain.Attempt, error) {
 	return data, err
 }
 
-
 func (repo *repoAttempt) VerifAttemptIsThere(attempt *domain.Attempt) (id string, err error) {
 
 	query := "SELECT id, user_id, test_id FROM attempts WHERE user_id = ? AND test_id = ?"
@@ -76,7 +138,7 @@ func (repo *repoAttempt) VerifAttemptIsThere(attempt *domain.Attempt) (id string
 
 	var data domain.Attempt
 	err = row.Scan(&data.ID, &data.UserID, &data.TestID)
-	
+
 	fmt.Println(data, "attempt id")
 
 	if err != nil {

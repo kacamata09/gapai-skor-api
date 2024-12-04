@@ -103,13 +103,13 @@ func (repo *repoAttemptAnswer) Update(tx *sql.Tx, attemptAnswer *domain.AttemptA
 
 func (repo *repoAttemptAnswer) VerifAttemptAnswerIsThere(attemptAnswer *domain.AttemptAnswer) (id string, err error) {
 
-	query := "SELECT id FROM attempt_answers WHERE selected_answer_option_id = ? AND question_id = ? AND attempt_id = ?"
+	query := "SELECT id, question_id FROM attempt_answers WHERE selected_answer_option_id = ? AND question_id = ? AND attempt_id = ?"
 	row := repo.DB.QueryRow(query, attemptAnswer.SelectedAnswerOptionID, attemptAnswer.QuestionID, attemptAnswer.AttemptID)
 
 	var data domain.AttemptAnswer
-	err = row.Scan(&data.ID)
-	
-	fmt.Println(data, "attempt id")
+	err = row.Scan(&data.ID, &data.QuestionID)
+
+	fmt.Println(data, "attempt ansdasdasdfasfbjbkjbjk id")
 
 	if err != nil {
 		return "", err

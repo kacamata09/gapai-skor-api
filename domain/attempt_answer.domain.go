@@ -11,6 +11,8 @@ type AttemptAnswer struct {
 	AttemptID              string `json:"attempt_id"`
 	QuestionID             string `json:"question_id"`
 	SelectedAnswerOptionID string `json:"selected_answer_option_id"`
+	IsCorrect              int8   `json:"is_correct"`
+	QuestionType           string `json:"question_type"`
 	CreatedAt              string `json:"created_at"`
 	UpdatedAt              string `json:"updated_at"`
 }

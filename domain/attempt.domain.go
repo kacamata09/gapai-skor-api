@@ -20,6 +20,7 @@ type Attempt struct {
 type AttemptRepository interface {
 	GetAll() ([]Attempt, error)
 	GetByID(id string) (Attempt, error)
+	GetAttemptWithAttemptAnswer(id string) (Attempt, error)
 	Create(tx *sql.Tx, attempt *Attempt) (string, error)
 	Update(attempt *Attempt) error
 	VerifAttemptIsThere(attempt *Attempt) (string, error)
@@ -29,6 +30,7 @@ type AttemptRepository interface {
 type AttemptUsecase interface {
 	GetAllData() ([]Attempt, error)
 	GetByID(id string) (Attempt, error)
+	GetAttemptWithAttemptAnswer(id string) (Attempt, error)
 	Create(attempt *Attempt) error
 	// CreateWithAttemptAnswers(attempt *Attempt) error
 }

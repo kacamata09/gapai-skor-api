@@ -27,6 +27,8 @@ func AttemptRoute(e *echo.Echo, uc domain.AttemptUsecase) {
 	e.GET("/attempt", handler.GetAllHandler)
 	e.POST("/attempt", handler.Create)
 	e.GET("/attempt/:id", handler.GetByIDHandler)
+	e.GET("/attempt/score/:id", handler.GetScore)
+
 }
 
 func (h *AttemptHandler) GetAllHandler(c echo.Context) error {
@@ -51,6 +53,25 @@ func (h *AttemptHandler) GetByIDHandler(c echo.Context) error {
 	// }
 
 	data, err := h.usecase.GetByID(id)
+
+	if err != nil {
+		return helper_http.ErrorResponse(c, err)
+	}
+
+	resp := helper_http.SuccessResponse(c, data, "success get by id")
+	return resp
+}
+
+func (h *AttemptHandler) GetScore(c echo.Context) error {
+	id := c.Param("id")
+	// id = fmt.Sprintf("%s")
+	// num, err := strconv.Atoi(id)
+
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	data, err := h.usecase.GetAttemptWithAttemptAnswer(id)
 
 	if err != nil {
 		return helper_http.ErrorResponse(c, err)

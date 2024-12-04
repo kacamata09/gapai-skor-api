@@ -34,6 +34,11 @@ func (uc AttemptUsecase) GetByID(id string) (domain.Attempt, error) {
 	return data, err
 }
 
+func (uc AttemptUsecase) GetAttemptWithAttemptAnswer(id string) (domain.Attempt, error) {
+	data, err := uc.AttemptRepo.GetAttemptWithAttemptAnswer(id)
+	return data, err
+}
+
 func (uc AttemptUsecase) Create(input *domain.Attempt) error {
 	// usernameExisted, _ := uc.AttemptRepo.GetByUsername(input.Username)
 	// if usernameExisted {
@@ -44,14 +49,14 @@ func (uc AttemptUsecase) Create(input *domain.Attempt) error {
 	// if emailExisted {
 	// 	return "sudah ada coy"
 	// }
-	
+
 	id, err := uc.AttemptRepo.VerifAttemptIsThere(input)
 	if id == "" {
 		_, err = uc.AttemptRepo.Create(nil, input)
 	} else {
 		input.ID = id
 		err = uc.AttemptRepo.Update(input)
-		}
+	}
 	// buat jika belum ada
 	// jika sudah ada maka update, tapi getnya by test_id dan user_id
 	return err
