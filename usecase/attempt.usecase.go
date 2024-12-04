@@ -44,7 +44,15 @@ func (uc AttemptUsecase) Create(input *domain.Attempt) error {
 	// if emailExisted {
 	// 	return "sudah ada coy"
 	// }
-
-	_, err := uc.AttemptRepo.Create(nil, input)
+	
+	id, err := uc.AttemptRepo.VerifAttemptIsThere(input)
+	if id == "" {
+		_, err = uc.AttemptRepo.Create(nil, input)
+	} else {
+		input.ID = id
+		err = uc.AttemptRepo.Update(input)
+		}
+	// buat jika belum ada
+	// jika sudah ada maka update, tapi getnya by test_id dan user_id
 	return err
 }

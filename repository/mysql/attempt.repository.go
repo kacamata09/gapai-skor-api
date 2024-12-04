@@ -68,6 +68,26 @@ func (repo *repoAttempt) GetByID(id string) (domain.Attempt, error) {
 	return data, err
 }
 
+
+func (repo *repoAttempt) VerifAttemptIsThere(attempt *domain.Attempt) (id string, err error) {
+
+	query := "SELECT id, user_id, test_id FROM attempts WHERE user_id = ? AND test_id = ?"
+	row := repo.DB.QueryRow(query, attempt.UserID, attempt.TestID)
+
+	var data domain.Attempt
+	err = row.Scan(&data.ID, &data.UserID, &data.TestID)
+	
+	fmt.Println(data, "attempt id")
+
+	if err != nil {
+		return "", err
+	}
+
+	id = data.ID
+
+	return id, err
+}
+
 func (repo *repoAttempt) Create(tx *sql.Tx, attempt *domain.Attempt) (id string, err error) {
 	newUUID, _ := uuid.NewRandom()
 	// newUUID, _ := uuid.NewUUID()
@@ -83,4 +103,15 @@ func (repo *repoAttempt) Create(tx *sql.Tx, attempt *domain.Attempt) (id string,
 		return "", err
 	}
 	return id, err
+}
+
+func (repo *repoAttempt) Update(attempt *domain.Attempt) (err error) {
+	query := "UPDATE attempts SET score = ? WHERE id = ?"
+
+	_, err = repo.DB.Exec(query, attempt.Score, attempt.ID)
+
+	if err != nil {
+		return err
+	}
+	return err
 }

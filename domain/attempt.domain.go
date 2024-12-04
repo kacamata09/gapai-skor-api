@@ -21,7 +21,8 @@ type AttemptRepository interface {
 	GetAll() ([]Attempt, error)
 	GetByID(id string) (Attempt, error)
 	Create(tx *sql.Tx, attempt *Attempt) (string, error)
-	// Update(ar *Article) error
+	Update(attempt *Attempt) error
+	VerifAttemptIsThere(attempt *Attempt) (string, error)
 	// Delete(id string) error
 }
 
