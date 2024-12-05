@@ -120,6 +120,56 @@ func (repo *repoAttempt) GetAttemptWithAttemptAnswer(id string) (domain.Attempt,
 	return data, err
 }
 
+func (repo *repoAttempt) GetAttemptHistory(id string) ([]domain.Attempt, error) {
+
+	query := `
+	SELECT 
+		att.id AS attempt_id,
+		att.test_id AS test_id,
+		att.user_id AS user_id,
+		att.score AS score,
+		att.attempt_date AS attempt_date,
+		att.updated_at AS updated_at,
+		t.id AS test_id,
+		t.test_title AS test_title
+	FROM 
+		attempts att
+	LEFT JOIN 
+		tests t
+	ON 
+		t.id = att.test_id
+	WHERE 
+		att.user_id = ?;
+		`
+
+	var data []domain.Attempt
+	rows, err := repo.DB.Query(query, id)
+	if err != nil {
+		return data, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var attempt domain.Attempt
+		var test domain.Test
+
+		err := rows.Scan(&attempt.ID, &attempt.TestID, &attempt.UserID, &attempt.Score,
+			&attempt.AttemptDate, &attempt.UpdatedAt, &test.ID, &attempt.TestTitle)
+		fmt.Println(err)
+		if err != nil {
+			return data, err
+		}
+
+		// attempt.TestTitle = test.TestTitle
+		data = append(data, attempt)
+	}
+
+	if err := rows.Err(); err != nil {
+		return data, err
+	}
+	return data, err
+}
+
 func (repo *repoAttempt) GetByID(id string) (domain.Attempt, error) {
 	row := repo.DB.QueryRow("SELECT * FROM attempts where id=?", id)
 	fmt.Println(id)

@@ -34,6 +34,11 @@ func (uc AttemptUsecase) GetByID(id string) (domain.Attempt, error) {
 	return data, err
 }
 
+func (uc AttemptUsecase) GetAttemptHistory(id string) ([]domain.Attempt, error) {
+	data, err := uc.AttemptRepo.GetAttemptHistory(id)
+	return data, err
+}
+
 func (uc AttemptUsecase) GetAttemptWithAttemptAnswer(id string) (domain.Attempt, error) {
 
 	data, err := uc.AttemptRepo.GetAttemptWithAttemptAnswer(id)

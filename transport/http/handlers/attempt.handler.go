@@ -28,6 +28,7 @@ func AttemptRoute(e *echo.Echo, uc domain.AttemptUsecase) {
 	e.POST("/attempt", handler.Create)
 	e.GET("/attempt/:id", handler.GetByIDHandler)
 	e.GET("/attempt/score/:id", handler.GetScore)
+	e.GET("/attempt/history/:id", handler.GetHistory)
 
 }
 
@@ -53,6 +54,19 @@ func (h *AttemptHandler) GetByIDHandler(c echo.Context) error {
 	// }
 
 	data, err := h.usecase.GetByID(id)
+
+	if err != nil {
+		return helper_http.ErrorResponse(c, err)
+	}
+
+	resp := helper_http.SuccessResponse(c, data, "success get by id")
+	return resp
+}
+
+func (h *AttemptHandler) GetHistory(c echo.Context) error {
+	id := c.Param("id")
+
+	data, err := h.usecase.GetAttemptHistory(id)
 
 	if err != nil {
 		return helper_http.ErrorResponse(c, err)

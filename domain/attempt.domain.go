@@ -12,6 +12,7 @@ type Attempt struct {
 	TestID         string          `json:"test_id"`
 	Score          int16           `json:"score"`
 	AttemptDate    string          `json:"attempt_date"`
+	TestTitle      string          `json:"test_title"`
 	AttemptAnswers []AttemptAnswer `json:"attempt_answers"`
 	CreatedAt      string          `json:"created_at"`
 	UpdatedAt      string          `json:"updated_at"`
@@ -20,6 +21,7 @@ type Attempt struct {
 type AttemptRepository interface {
 	GetAll() ([]Attempt, error)
 	GetByID(id string) (Attempt, error)
+	GetAttemptHistory(id string) ([]Attempt, error)
 	GetAttemptWithAttemptAnswer(id string) (Attempt, error)
 	Create(tx *sql.Tx, attempt *Attempt) (string, error)
 	Update(attempt *Attempt) error
@@ -30,7 +32,9 @@ type AttemptRepository interface {
 type AttemptUsecase interface {
 	GetAllData() ([]Attempt, error)
 	GetByID(id string) (Attempt, error)
+	GetAttemptHistory(id string) ([]Attempt, error)
 	GetAttemptWithAttemptAnswer(id string) (Attempt, error)
+
 	Create(attempt *Attempt) error
 	// CreateWithAttemptAnswers(attempt *Attempt) error
 }
