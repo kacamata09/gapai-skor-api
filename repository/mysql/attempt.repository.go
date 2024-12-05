@@ -59,9 +59,12 @@ func (repo *repoAttempt) GetAttemptWithAttemptAnswer(id string) (domain.Attempt,
 		att.updated_at AS updated_at,
 		aa.id AS attempt_answer_id,
 		aa.attempt_id AS aa_attempt_id,
+		aa.question_id AS aa_question_id,
 		aa.selected_answer_option_id AS selected_answer_option_id,
 		ao.id AS answer_option_id,
-		ao.is_correct AS is_correct
+		ao.is_correct AS is_correct,
+		q.id AS question_id,
+		q.question_type AS question_type
 	FROM 
 		attempts att
 	LEFT JOIN 
@@ -72,6 +75,10 @@ func (repo *repoAttempt) GetAttemptWithAttemptAnswer(id string) (domain.Attempt,
 		answer_options ao
 	ON
 		ao.id = aa.selected_answer_option_id
+	LEFT JOIN 
+		questions q
+	ON
+		q.id = aa.question_id
 	WHERE 
 		att.id = ?;
 		`
@@ -87,16 +94,19 @@ func (repo *repoAttempt) GetAttemptWithAttemptAnswer(id string) (domain.Attempt,
 	for rows.Next() {
 		var attemptAnswer domain.AttemptAnswer
 		var answerOption domain.AnswerOption
+		var question domain.Question
+
 		err := rows.Scan(&data.ID, &data.TestID, &data.UserID, &data.Score,
 			&data.AttemptDate, &data.UpdatedAt, &attemptAnswer.ID, &attemptAnswer.AttemptID,
-			&attemptAnswer.SelectedAnswerOptionID, &answerOption.ID, &answerOption.IsCorrect)
+			&answerOption.QuestionID, &attemptAnswer.SelectedAnswerOptionID, &answerOption.ID,
+			&answerOption.IsCorrect, &question.ID, &question.QuestionType)
 		fmt.Println(err)
 		if err != nil {
 			return data, err
 		}
 		attemptAnswer.IsCorrect = answerOption.IsCorrect
+		attemptAnswer.QuestionType = question.QuestionType
 		fmt.Println(attemptAnswer)
-		// attemptAnswer.QuestionType = answerOption.QuestionType
 
 		// attempt.CreatedAt = time.Now().Add(24 * time.Hour)
 		// attempt.UpdatedAt = time.Now().Add(24 * time.Hour)

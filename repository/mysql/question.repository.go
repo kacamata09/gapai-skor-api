@@ -33,7 +33,8 @@ func (repo *repoQuestion) GetAll() ([]domain.Question, error) {
 			q.created_at AS question_created_at,
 			ao.id AS answer_option_id,
 			ao.question_id AS question_ao_id,
-			ao.content_answer AS content_answer_option 
+			ao.content_answer AS content_answer_option,
+			ao.is_correct AS is_correct 
 		FROM questions q 
 		LEFT JOIN answer_options ao 
 		ON ao.question_id = q.id
@@ -53,6 +54,7 @@ func (repo *repoQuestion) GetAll() ([]domain.Question, error) {
 			&question.ID, &question.TestID, &question.ContentQuestion, &question.ImageURL,
 			&question.AudioURL, &question.QuestionType, &question.Points, &question.QuestionNumber,
 			&question.CreatedAt, &answerOption.ID, &answerOption.QuestionID, &answerOption.ContentAnswer,
+			&answerOption.IsCorrect,
 		)
 		if err != nil {
 			return nil, err

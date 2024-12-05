@@ -35,20 +35,38 @@ func (uc AttemptUsecase) GetByID(id string) (domain.Attempt, error) {
 }
 
 func (uc AttemptUsecase) GetAttemptWithAttemptAnswer(id string) (domain.Attempt, error) {
+
 	data, err := uc.AttemptRepo.GetAttemptWithAttemptAnswer(id)
+
+	var listening, structure, reading float64
+	for _, answer := range data.AttemptAnswers {
+		if answer.IsCorrect == 1 {
+			switch answer.QuestionType {
+			case "Listening":
+				listening += 1.36
+			case "Structure":
+				structure += 1.7
+			case "Reading":
+				reading += 1.36
+			}
+		}
+	}
+
+	totalScore := (listening + structure + reading) * 10 / 3
+
+	newData := domain.Attempt{
+		ID:    id,
+		Score: int16(totalScore),
+	}
+
+	err = uc.AttemptRepo.Update(&newData)
+
+	data.Score = int16(totalScore)
+
 	return data, err
 }
 
 func (uc AttemptUsecase) Create(input *domain.Attempt) error {
-	// usernameExisted, _ := uc.AttemptRepo.GetByUsername(input.Username)
-	// if usernameExisted {
-	// 	return "sudah ada coy"
-	// }
-
-	// emailExisted, _ := uc.AttemptRepo.GetByEmail(input.Email)
-	// if emailExisted {
-	// 	return "sudah ada coy"
-	// }
 
 	id, err := uc.AttemptRepo.VerifAttemptIsThere(input)
 	if id == "" {
@@ -57,7 +75,5 @@ func (uc AttemptUsecase) Create(input *domain.Attempt) error {
 		input.ID = id
 		err = uc.AttemptRepo.Update(input)
 	}
-	// buat jika belum ada
-	// jika sudah ada maka update, tapi getnya by test_id dan user_id
 	return err
 }

@@ -77,7 +77,7 @@ func (repo *repoAnswerOption) Create(tx *sql.Tx, answerOption *domain.AnswerOpti
 		_, err = tx.Exec(query, id, answerOption.QuestionID, answerOption.ContentAnswer, answerOption.ImageURL,
 			answerOption.AudioURL, answerOption.IsCorrect)
 	} else {
-		_, err = repo.DB.Exec(query, answerOption.QuestionID, answerOption.ContentAnswer, answerOption.ImageURL,
+		_, err = repo.DB.Exec(query, id, answerOption.QuestionID, answerOption.ContentAnswer, answerOption.ImageURL,
 			answerOption.AudioURL, answerOption.IsCorrect)
 	}
 	if err != nil {
