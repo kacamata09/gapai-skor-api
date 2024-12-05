@@ -197,3 +197,29 @@ func (repo *repoQuestion) Create(tx *sql.Tx, question *domain.Question) (id stri
 	}
 	return id, err
 }
+
+func (repo *repoQuestion) Update(id string, tx *sql.Tx, question *domain.Question) (err error) {
+
+	query := `
+		UPDATE questions
+		SET test_id = ?
+			content_question = ?, 
+			image_url = ?, 
+			audio_url = ?, 
+			question_type = ?, 
+			question_number = ?, 
+			points = ?
+		WHERE id = ?;
+		`
+	if tx != nil {
+		_, err = tx.Exec(query, question.ContentQuestion, question.ImageURL,
+			question.AudioURL, question.TestID, question.QuestionType, question.QuestionNumber, question.Points, id)
+	} else {
+		_, err = repo.DB.Exec(query, question.ContentQuestion, question.ImageURL,
+			question.AudioURL, question.TestID, question.QuestionType, question.QuestionNumber, question.Points, id)
+	}
+	if err != nil {
+		return err
+	}
+	return err
+}

@@ -21,6 +21,8 @@ type AnswerOptionRepository interface {
 	GetAll() ([]AnswerOption, error)
 	GetByID(id string) (AnswerOption, error)
 	Create(tx *sql.Tx, answerOption *AnswerOption) error
+	Update(id string, tx *sql.Tx, answerOption *AnswerOption) error
+
 	// Update(ar *Article) error
 	// Delete(id string) error
 }

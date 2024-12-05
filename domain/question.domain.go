@@ -43,7 +43,7 @@ type QuestionRepository interface {
 	GetByTestID(id string) ([]Question, error)
 	GetByID(id string) (Question, error)
 	Create(tx *sql.Tx, question *Question) (string, error)
-	// Update(ar *Article) error
+	Update(id string, tx *sql.Tx, question *Question) error
 	// Delete(id string) error
 }
 
@@ -53,4 +53,5 @@ type QuestionUsecase interface {
 	GetByTestID(id string) ([]Question, error)
 	Create(question *Question) error
 	CreateWithAnswerOptions(question *Question) error
+	UpdateWithAnswerOptions(id string, question *Question) error
 }

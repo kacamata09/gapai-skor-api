@@ -45,15 +45,6 @@ func (uc QuestionUsecase) GetByTestID(id string) ([]domain.Question, error) {
 }
 
 func (uc QuestionUsecase) Create(input *domain.Question) error {
-	// usernameExisted, _ := uc.QuestionRepo.GetByUsername(input.Username)
-	// if usernameExisted {
-	// 	return "sudah ada coy"
-	// }
-
-	// emailExisted, _ := uc.QuestionRepo.GetByEmail(input.Email)
-	// if emailExisted {
-	// 	return "sudah ada coy"
-	// }
 
 	_, err := uc.QuestionRepo.Create(nil, input)
 	return err
@@ -80,6 +71,34 @@ func (uc QuestionUsecase) CreateWithAnswerOptions(input *domain.Question) error 
 		if err := uc.AnswerOptionRepo.Create(tx, &option); err != nil {
 			uc.Transaction.RollbackTransaction(tx)
 			fmt.Println("gagal create option")
+			return err
+		}
+	}
+
+	uc.Transaction.CommitTransaction(tx)
+
+	return err
+}
+
+func (uc QuestionUsecase) UpdateWithAnswerOptions(id string, input *domain.Question) error {
+
+	fmt.Println("ah shit")
+	tx, err := uc.Transaction.BeginTransaction()
+	if err != nil {
+		return err
+	}
+
+	if err = uc.QuestionRepo.Update(id, tx, input); err != nil {
+		uc.Transaction.RollbackTransaction(tx)
+		fmt.Println("gagal update question")
+		return err
+	}
+
+	for _, option := range input.AnswerOptions {
+		option.QuestionID = id
+		if err := uc.AnswerOptionRepo.Update(option.ID, tx, &option); err != nil {
+			uc.Transaction.RollbackTransaction(tx)
+			fmt.Println("gagal update option")
 			return err
 		}
 	}

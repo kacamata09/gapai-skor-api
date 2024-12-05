@@ -120,6 +120,23 @@ func (h *QuestionHandler) CreateWithAnswerOptions(c echo.Context) error {
 	return helper_http.SuccessResponse(c, data, "success create question with answer_options")
 }
 
+func (h *QuestionHandler) UpdateithAnswerOptions(c echo.Context) error {
+	var data domain.Question
+
+	err := c.Bind(&data)
+	if err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, err.Error())
+	}
+
+	err = h.usecase.CreateWithAnswerOptions(&data)
+
+	if err != nil {
+		return helper_http.ErrorResponse(c, err)
+	}
+
+	return helper_http.SuccessResponse(c, data, "success create question with answer_options")
+}
+
 type FileUpload struct {
 	File string `json:"file"`
 }

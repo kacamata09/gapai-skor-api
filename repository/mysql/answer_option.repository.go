@@ -85,3 +85,26 @@ func (repo *repoAnswerOption) Create(tx *sql.Tx, answerOption *domain.AnswerOpti
 	}
 	return err
 }
+
+func (repo *repoAnswerOption) Update(id string, tx *sql.Tx, answerOption *domain.AnswerOption) (err error) {
+	query := `
+		UPDATE answer_options
+		SET question_id = ?, 
+			content_answer = ?, 
+			image_url = ?, 
+			audio_url = ?, 
+			is_correct = ?
+		WHERE id = ?
+	`
+	if tx != nil {
+		_, err = tx.Exec(query, answerOption.QuestionID, answerOption.ContentAnswer, answerOption.ImageURL,
+			answerOption.AudioURL, answerOption.IsCorrect, id)
+	} else {
+		_, err = repo.DB.Exec(query, answerOption.QuestionID, answerOption.ContentAnswer, answerOption.ImageURL,
+			answerOption.AudioURL, answerOption.IsCorrect, id)
+	}
+	if err != nil {
+		return err
+	}
+	return err
+}
