@@ -31,8 +31,10 @@ func QuestionRoute(e *echo.Echo, uc domain.QuestionUsecase) {
 	e.GET("/question", handler.GetAllHandler)
 	e.POST("/question", handler.Create)
 	e.POST("/question_options", handler.CreateWithAnswerOptions)
+	e.PUT("/question_options/:id", handler.UpdateWithAnswerOptions)
 	e.GET("/question/:id", handler.GetByIDHandler)
 	e.GET("/question/test_id/:id", handler.GetByTestIDHandler)
+	e.DELETE("/question/:id", handler.DeleteHandler)
 	e.POST("/upload", handler.UploadFile)
 
 }
@@ -120,7 +122,9 @@ func (h *QuestionHandler) CreateWithAnswerOptions(c echo.Context) error {
 	return helper_http.SuccessResponse(c, data, "success create question with answer_options")
 }
 
-func (h *QuestionHandler) UpdateithAnswerOptions(c echo.Context) error {
+func (h *QuestionHandler) UpdateWithAnswerOptions(c echo.Context) error {
+	id := c.Param("id")
+
 	var data domain.Question
 
 	err := c.Bind(&data)
@@ -128,13 +132,13 @@ func (h *QuestionHandler) UpdateithAnswerOptions(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}
 
-	err = h.usecase.CreateWithAnswerOptions(&data)
+	err = h.usecase.UpdateWithAnswerOptions(id, &data)
 
 	if err != nil {
 		return helper_http.ErrorResponse(c, err)
 	}
 
-	return helper_http.SuccessResponse(c, data, "success create question with answer_options")
+	return helper_http.SuccessResponse(c, data, "success update question with answer_options")
 }
 
 type FileUpload struct {
@@ -150,7 +154,8 @@ func (h *QuestionHandler) UploadFile(c echo.Context) error {
 	}
 
 	// Tentukan lokasi penyimpanan file
-	uploadDir := "../gapaiskor_fe/build/uploads"
+	// uploadDir := "../gapaiskor_fe/build/uploads"
+	uploadDir := "../uploads"
 	// Tentukan lokasi penyimpanan file
 	// uploadDir := "/home/gapaisko/gapaiskorweb/gapaiskor_fe/build/uploads"
 
@@ -187,4 +192,23 @@ func (h *QuestionHandler) UploadFile(c echo.Context) error {
 	// return c.JSON(http.StatusOK, helper_http.SuccessResponse(c, FileUpload{File: dst}, "file uploaded successfully"))
 	return helper_http.SuccessResponse(c, FileUpload{File: dst}, "success file upload")
 
+}
+
+func (h *QuestionHandler) DeleteHandler(c echo.Context) error {
+	id := c.Param("id")
+	// id = fmt.Sprintf("%s")
+	// num, err := strconv.Atoi(id)
+
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	err := h.usecase.Delete(id)
+
+	if err != nil {
+		return helper_http.ErrorResponse(c, err)
+	}
+
+	resp := helper_http.SuccessResponse(c, nil, "success delete option")
+	return resp
 }

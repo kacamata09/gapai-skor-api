@@ -107,3 +107,8 @@ func (uc QuestionUsecase) UpdateWithAnswerOptions(id string, input *domain.Quest
 
 	return err
 }
+
+func (uc QuestionUsecase) Delete(id string) (error) {
+	err := uc.QuestionRepo.Delete(id)
+	return err
+}

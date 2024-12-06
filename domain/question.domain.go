@@ -44,7 +44,7 @@ type QuestionRepository interface {
 	GetByID(id string) (Question, error)
 	Create(tx *sql.Tx, question *Question) (string, error)
 	Update(id string, tx *sql.Tx, question *Question) error
-	// Delete(id string) error
+	Delete(id string) error
 }
 
 type QuestionUsecase interface {
@@ -54,4 +54,5 @@ type QuestionUsecase interface {
 	Create(question *Question) error
 	CreateWithAnswerOptions(question *Question) error
 	UpdateWithAnswerOptions(id string, question *Question) error
+	Delete(id string) error
 }
