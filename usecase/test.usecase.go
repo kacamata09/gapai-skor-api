@@ -103,3 +103,33 @@ func (uc TestUsecase) Create(input *domain.Test) error {
 	err := uc.TestRepo.Create(input)
 	return err
 }
+
+func (uc TestUsecase) Update(id string, input *domain.Test) error {
+	// usernameExisted, _ := uc.TestRepo.GetByUsername(input.Username)
+	// if usernameExisted {
+	// 	return "sudah ada coy"
+	// }
+
+	// emailExisted, _ := uc.TestRepo.GetByEmail(input.Email)
+	// if emailExisted {
+	// 	return "sudah ada coy"
+	// }
+
+	err := uc.TestRepo.Update(id, input)
+	return err
+}
+
+func (uc TestUsecase) Delete(id string) error {
+	// usernameExisted, _ := uc.TestRepo.GetByUsername(input.Username)
+	// if usernameExisted {
+	// 	return "sudah ada coy"
+	// }
+
+	// emailExisted, _ := uc.TestRepo.GetByEmail(input.Email)
+	// if emailExisted {
+	// 	return "sudah ada coy"
+	// }
+
+	err := uc.TestRepo.Delete(id)
+	return err
+}

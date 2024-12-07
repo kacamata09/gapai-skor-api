@@ -32,8 +32,8 @@ type TestRepository interface {
 	GetByTestCode(testCode string) (Test, error)
 	GetByTestCodeWithQuestions(testCode string) (Test, error)
 	Create(test *Test) error
-	// Update(ar *Article) error
-	// Delete(id string) error
+	Update(id string, test *Test) error
+	Delete(id string) error
 }
 
 type TestUsecase interface {
@@ -41,4 +41,6 @@ type TestUsecase interface {
 	GetByID(id string) (Test, error)
 	GetByTestCodeWithQuestions(id string) (TestWithQuestion, error)
 	Create(test *Test) error
+	Update(id string, test *Test) error
+	Delete(id string) error
 }

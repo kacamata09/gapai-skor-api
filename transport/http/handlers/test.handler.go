@@ -26,6 +26,8 @@ func TestRoute(e *echo.Echo, uc domain.TestUsecase) {
 
 	e.GET("/test", handler.GetAllHandler)
 	e.POST("/test", handler.Create)
+	e.PUT("/test/:id", handler.UpdateHandler)
+	e.DELETE("/test/:id", handler.DeleteHandler)
 	e.GET("/test/:id", handler.GetByIDHandler)
 	e.GET("/test/code/:test_code", handler.GetByTestCodeWithQuestionsHandler)
 }
@@ -94,4 +96,37 @@ func (h *TestHandler) Create(c echo.Context) error {
 		return helper_http.ErrorResponse(c, err)
 	}
 	return helper_http.SuccessResponse(c, data, "success create test")
+}
+
+func (h *TestHandler) UpdateHandler(c echo.Context) error {
+	id := c.Param("id")
+
+	var data domain.Test
+
+	err := c.Bind(&data)
+	if err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, err.Error())
+	}
+
+	err = h.usecase.Update(id, &data)
+
+	if err != nil {
+		return helper_http.ErrorResponse(c, err)
+	}
+
+	resp := helper_http.SuccessResponse(c, data, "success update")
+	return resp
+}
+
+func (h *TestHandler) DeleteHandler(c echo.Context) error {
+	id := c.Param("id")
+
+	err := h.usecase.Delete(id)
+
+	if err != nil {
+		return helper_http.ErrorResponse(c, err)
+	}
+
+	resp := helper_http.SuccessResponse(c, nil, "success update")
+	return resp
 }

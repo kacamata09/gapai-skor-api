@@ -199,3 +199,17 @@ func (repo *repoTest) Create(test *domain.Test) error {
 		id, test.TestCode, test.TestTitle, test.Description, test.CreatedBy, test.Duration)
 	return err
 }
+
+func (repo *repoTest) Update(id string, test *domain.Test) error {
+
+	_, err := repo.DB.Exec("UPDATE tests SET test_code = ?, test_title = ?, description = ?, created_by = ?, duration = ? WHERE id = ?",
+		test.TestCode, test.TestTitle, test.Description, test.CreatedBy, test.Duration, id)
+	return err
+}
+
+func (repo *repoTest) Delete(id string) error {
+
+	_, err := repo.DB.Exec("DELETE FROM tests WHERE id = ?", id)
+
+	return err
+}
