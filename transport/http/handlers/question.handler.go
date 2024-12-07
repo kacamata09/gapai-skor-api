@@ -154,8 +154,8 @@ func (h *QuestionHandler) UploadFile(c echo.Context) error {
 	}
 
 	// Tentukan lokasi penyimpanan file
-	// uploadDir := "../gapaiskor_fe/build/uploads"
-	uploadDir := "../uploads"
+	uploadDir := "../gapaiskor_fe/build/uploads"
+	// uploadDir := "../uploads"
 	// Tentukan lokasi penyimpanan file
 	// uploadDir := "/home/gapaisko/gapaiskorweb/gapaiskor_fe/build/uploads"
 
