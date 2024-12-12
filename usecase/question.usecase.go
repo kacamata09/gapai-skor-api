@@ -41,6 +41,11 @@ func (uc QuestionUsecase) GetByID(id string) (domain.Question, error) {
 
 func (uc QuestionUsecase) GetByTestID(id string) ([]domain.Question, error) {
 	data, err := uc.QuestionRepo.GetByTestID(id)
+
+	sort.Slice(data, func(i, j int) bool {
+		return data[i].QuestionNumber < data[j].QuestionNumber
+	})
+	
 	return data, err
 }
 
