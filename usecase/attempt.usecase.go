@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"database/sql"
+	"fmt"
 	"gapai-skor-api/domain"
 
 	// "time"
@@ -77,8 +78,9 @@ func (uc AttemptUsecase) Create(input *domain.Attempt) error {
 	if id == "" {
 		_, err = uc.AttemptRepo.Create(nil, input)
 	} else {
-		input.ID = id
-		err = uc.AttemptRepo.Update(input)
+		// input.ID = id
+		// err = uc.AttemptRepo.Update(input)
+		err = fmt.Errorf("kode sudah kadaluarsa")
 	}
 	return err
 }
