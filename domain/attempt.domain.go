@@ -35,6 +35,6 @@ type AttemptUsecase interface {
 	GetAttemptHistory(id string) ([]Attempt, error)
 	GetAttemptWithAttemptAnswer(id string) (Attempt, error)
 
-	Create(attempt *Attempt) error
+	Create(attempt *Attempt) (string, error)
 	// CreateWithAttemptAnswers(attempt *Attempt) error
 }

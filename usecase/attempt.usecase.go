@@ -72,15 +72,15 @@ func (uc AttemptUsecase) GetAttemptWithAttemptAnswer(id string) (domain.Attempt,
 	return data, err
 }
 
-func (uc AttemptUsecase) Create(input *domain.Attempt) error {
+func (uc AttemptUsecase) Create(input *domain.Attempt) (string, error) {
 
 	id, err := uc.AttemptRepo.VerifAttemptIsThere(input)
 	if id == "" {
-		_, err = uc.AttemptRepo.Create(nil, input)
+		id, err = uc.AttemptRepo.Create(nil, input)
 	} else {
 		// input.ID = id
 		// err = uc.AttemptRepo.Update(input)
 		err = fmt.Errorf("kode sudah kadaluarsa")
 	}
-	return err
+	return id, err
 }

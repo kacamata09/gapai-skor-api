@@ -103,7 +103,9 @@ func (h *AttemptHandler) Create(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}
 
-	err = h.usecase.Create(&data)
+	id, err := h.usecase.Create(&data)
+
+	data.ID = id
 
 	if err != nil {
 		return helper_http.ErrorResponse(c, err)
