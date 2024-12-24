@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"gapai-skor-api/domain"
 	"sort"
+	"strings"
 	// "time"
 	// "github.com/labstack/echo"
 )
@@ -58,8 +59,13 @@ func (uc TestUsecase) GetByTestCodeWithQuestions(testCode string) (domain.TestWi
 			PlayCount:       0,
 		}
 
+		// sort.Slice(question.AnswerOptions, func(i, j int) bool {
+		// 	return question.AnswerOptions[i].ContentAnswer < question.AnswerOptions[j].ContentAnswer
+		// })
 		sort.Slice(question.AnswerOptions, func(i, j int) bool {
-			return question.AnswerOptions[i].ContentAnswer < question.AnswerOptions[j].ContentAnswer
+			textI := strings.TrimSpace(question.AnswerOptions[i].ContentAnswer)
+			textJ := strings.TrimSpace(question.AnswerOptions[j].ContentAnswer)
+			return textI < textJ
 		})
 
 		for _, ao := range question.AnswerOptions {
