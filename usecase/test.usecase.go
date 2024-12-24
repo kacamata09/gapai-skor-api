@@ -58,6 +58,10 @@ func (uc TestUsecase) GetByTestCodeWithQuestions(testCode string) (domain.TestWi
 			PlayCount:       0,
 		}
 
+		sort.Slice(question.AnswerOptions, func(i, j int) bool {
+			return question.AnswerOptions[i].ContentAnswer < question.AnswerOptions[j].ContentAnswer
+		})
+
 		for _, ao := range question.AnswerOptions {
 			newFormatQuestion.AnswerOptions = append(newFormatQuestion.AnswerOptions, ao.ContentAnswer)
 			newFormatQuestion.AnswerOptionsID = append(newFormatQuestion.AnswerOptionsID, ao.ID)
