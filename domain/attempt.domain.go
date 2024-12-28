@@ -25,6 +25,7 @@ type AttemptRepository interface {
 	GetAll() ([]Attempt, error)
 	GetByID(id string) (Attempt, error)
 	GetAttemptHistory(id string) ([]Attempt, error)
+	GetAttemptTestUser(id string) ([]Attempt, error)
 	GetAttemptWithAttemptAnswer(id string) (Attempt, error)
 	Create(tx *sql.Tx, attempt *Attempt) (string, error)
 	Update(attempt *Attempt) error
@@ -36,8 +37,8 @@ type AttemptUsecase interface {
 	GetAllData() ([]Attempt, error)
 	GetByID(id string) (Attempt, error)
 	GetAttemptHistory(id string) ([]Attempt, error)
+	GetAttemptTestUser(id string) ([]Attempt, error)
 	GetAttemptWithAttemptAnswer(id string) (Attempt, error)
-
 	Create(attempt *Attempt) (string, error)
 	// CreateWithAttemptAnswers(attempt *Attempt) error
 }

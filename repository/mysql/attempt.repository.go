@@ -180,7 +180,6 @@ func (repo *repoAttempt) GetAttemptTestUser(id string) ([]domain.Attempt, error)
 		att.score,
 		att.attempt_date,
 		att.updated_at,
-		u.id,
 		u.fullname,
 		u.phone,
 		u.email
@@ -205,7 +204,7 @@ func (repo *repoAttempt) GetAttemptTestUser(id string) ([]domain.Attempt, error)
 		var attempt domain.Attempt
 
 		err := rows.Scan(&attempt.ID, &attempt.TestID, &attempt.UserID, &attempt.Score,
-			&attempt.AttemptDate, &attempt.UpdatedAt, &attempt.FUllname, &attempt.Email, &attempt.Phone)
+			&attempt.AttemptDate, &attempt.UpdatedAt, &attempt.FUllname, &attempt.Phone, &attempt.Email)
 		fmt.Println(err)
 		if err != nil {
 			return data, err
