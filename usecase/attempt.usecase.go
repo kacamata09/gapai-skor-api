@@ -75,7 +75,7 @@ func (uc AttemptUsecase) GetAttemptWithAttemptAnswer(id string) (domain.Attempt,
 func (uc AttemptUsecase) Create(input *domain.Attempt) (id string, err error) {
 
 	lenAttempts, err := uc.AttemptRepo.VerifAttemptIsThere(input)
-	if lenAttempts == 2 {
+	if lenAttempts < 2 {
 		id, err = uc.AttemptRepo.Create(nil, input)
 	} else {
 		// input.ID = id
