@@ -72,10 +72,10 @@ func (uc AttemptUsecase) GetAttemptWithAttemptAnswer(id string) (domain.Attempt,
 	return data, err
 }
 
-func (uc AttemptUsecase) Create(input *domain.Attempt) (string, error) {
+func (uc AttemptUsecase) Create(input *domain.Attempt) (id string, err error) {
 
-	id, err := uc.AttemptRepo.VerifAttemptIsThere(input)
-	if id == "" {
+	lenAttempts, err := uc.AttemptRepo.VerifAttemptIsThere(input)
+	if lenAttempts == 2 {
 		id, err = uc.AttemptRepo.Create(nil, input)
 	} else {
 		// input.ID = id

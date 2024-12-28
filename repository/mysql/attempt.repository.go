@@ -170,6 +170,57 @@ func (repo *repoAttempt) GetAttemptHistory(id string) ([]domain.Attempt, error) 
 	return data, err
 }
 
+func (repo *repoAttempt) GetAttemptTestUser(id string) ([]domain.Attempt, error) {
+
+	query := `
+	SELECT 
+		att.id,
+		att.test_id,
+		att.user_id,
+		att.score,
+		att.attempt_date,
+		att.updated_at,
+		u.id,
+		u.fullname,
+		u.phone,
+		u.email
+	FROM 
+		attempts att
+	LEFT JOIN 
+		users u
+	ON 
+		u.id = att.user_id
+	WHERE 
+		att.test_id = ?;
+		`
+
+	var data []domain.Attempt
+	rows, err := repo.DB.Query(query, id)
+	if err != nil {
+		return data, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var attempt domain.Attempt
+
+		err := rows.Scan(&attempt.ID, &attempt.TestID, &attempt.UserID, &attempt.Score,
+			&attempt.AttemptDate, &attempt.UpdatedAt, &attempt.FUllname, &attempt.Email, &attempt.Phone)
+		fmt.Println(err)
+		if err != nil {
+			return data, err
+		}
+
+		// attempt.TestTitle = test.TestTitle
+		data = append(data, attempt)
+	}
+
+	if err := rows.Err(); err != nil {
+		return data, err
+	}
+	return data, err
+}
+
 func (repo *repoAttempt) GetByID(id string) (domain.Attempt, error) {
 	row := repo.DB.QueryRow("SELECT * FROM attempts where id=?", id)
 	fmt.Println(id)
@@ -191,23 +242,42 @@ func (repo *repoAttempt) GetByID(id string) (domain.Attempt, error) {
 	return data, err
 }
 
-func (repo *repoAttempt) VerifAttemptIsThere(attempt *domain.Attempt) (id string, err error) {
+func (repo *repoAttempt) VerifAttemptIsThere(attempt *domain.Attempt) (id int, err error) {
+
+	// query := "SELECT id, user_id, test_id FROM attempts WHERE user_id = ? AND test_id = ?"
+	// row := repo.DB.QueryRow(query, attempt.UserID, attempt.TestID)
+
+	// var data domain.Attempt
+	// err = row.Scan(&data.ID, &data.UserID, &data.TestID)
+
+	// fmt.Println(data, "attempt id")
+
+	// if err != nil {
+	// 	return "", err
+	// }
+
+	// id = data.ID
+
+	// return id, err
 
 	query := "SELECT id, user_id, test_id FROM attempts WHERE user_id = ? AND test_id = ?"
-	row := repo.DB.QueryRow(query, attempt.UserID, attempt.TestID)
-
-	var data domain.Attempt
-	err = row.Scan(&data.ID, &data.UserID, &data.TestID)
-
-	fmt.Println(data, "attempt id")
-
+	rows, err := repo.DB.Query(query, attempt.UserID, attempt.TestID)
 	if err != nil {
-		return "", err
+		return 0, err
+	}
+	defer rows.Close()
+
+	lenRow := 0
+	for rows.Next() {
+		lenRow++
 	}
 
-	id = data.ID
+	if err = rows.Err(); err != nil {
+		return 0, err
+	}
 
-	return id, err
+	return lenRow, nil
+
 }
 
 func (repo *repoAttempt) Create(tx *sql.Tx, attempt *domain.Attempt) (id string, err error) {

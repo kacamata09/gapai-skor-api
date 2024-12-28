@@ -13,6 +13,9 @@ type Attempt struct {
 	Score          int16           `json:"score"`
 	AttemptDate    string          `json:"attempt_date"`
 	TestTitle      string          `json:"test_title"`
+	FUllname       string          `json:"fullname"`
+	Email          string          `json:"email"`
+	Phone          string          `json:"phone"`
 	AttemptAnswers []AttemptAnswer `json:"attempt_answers"`
 	CreatedAt      string          `json:"created_at"`
 	UpdatedAt      string          `json:"updated_at"`
@@ -25,7 +28,7 @@ type AttemptRepository interface {
 	GetAttemptWithAttemptAnswer(id string) (Attempt, error)
 	Create(tx *sql.Tx, attempt *Attempt) (string, error)
 	Update(attempt *Attempt) error
-	VerifAttemptIsThere(attempt *Attempt) (string, error)
+	VerifAttemptIsThere(attempt *Attempt) (int, error)
 	// Delete(id string) error
 }
 
