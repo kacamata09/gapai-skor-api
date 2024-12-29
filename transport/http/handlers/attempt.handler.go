@@ -30,6 +30,7 @@ func AttemptRoute(e *echo.Echo, uc domain.AttemptUsecase) {
 	e.GET("/attempt/score/:id", handler.GetScore)
 	e.GET("/attempt/history/:id", handler.GetHistory)
 	e.GET("/attempt/user/:id", handler.GetAttemptTestUser)
+	e.DELETE("/attempt/:id", handler.DeleteHandler)
 
 }
 
@@ -125,4 +126,17 @@ func (h *AttemptHandler) Create(c echo.Context) error {
 		return helper_http.ErrorResponse(c, err)
 	}
 	return helper_http.SuccessResponse(c, data, "success create attempt")
+}
+
+func (h *AttemptHandler) DeleteHandler(c echo.Context) error {
+	id := c.Param("id")
+
+	err := h.usecase.Delete(id)
+
+	if err != nil {
+		return helper_http.ErrorResponse(c, err)
+	}
+
+	resp := helper_http.SuccessResponse(c, nil, "success delete attempt")
+	return resp
 }

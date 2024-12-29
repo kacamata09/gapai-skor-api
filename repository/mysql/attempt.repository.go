@@ -306,3 +306,18 @@ func (repo *repoAttempt) Update(attempt *domain.Attempt) (err error) {
 	}
 	return err
 }
+
+func (repo *repoAttempt) Delete(id string) (err error) {
+
+	query := `
+		DELETE FROM attempts
+		WHERE id = ?;
+		`
+
+	_, err = repo.DB.Exec(query, id)
+
+	if err != nil {
+		return err
+	}
+	return err
+}

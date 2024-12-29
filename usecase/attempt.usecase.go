@@ -89,3 +89,8 @@ func (uc AttemptUsecase) Create(input *domain.Attempt) (id string, err error) {
 	}
 	return id, err
 }
+
+func (uc AttemptUsecase) Delete(id string) error {
+	err := uc.AttemptRepo.Delete(id)
+	return err
+}

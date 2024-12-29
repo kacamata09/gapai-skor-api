@@ -30,7 +30,7 @@ type AttemptRepository interface {
 	Create(tx *sql.Tx, attempt *Attempt) (string, error)
 	Update(attempt *Attempt) error
 	VerifAttemptIsThere(attempt *Attempt) (int, error)
-	// Delete(id string) error
+	Delete(id string) error
 }
 
 type AttemptUsecase interface {
@@ -40,5 +40,7 @@ type AttemptUsecase interface {
 	GetAttemptTestUser(id string) ([]Attempt, error)
 	GetAttemptWithAttemptAnswer(id string) (Attempt, error)
 	Create(attempt *Attempt) (string, error)
+	Delete(id string) error
+
 	// CreateWithAttemptAnswers(attempt *Attempt) error
 }
